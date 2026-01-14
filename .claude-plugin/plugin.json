@@ -1,0 +1,25 @@
+{
+  "name": "lisong-n8n-skills",
+  "version": "1.0.0",
+  "description": "Comprehensive n8n workflow development skills collection including workflow patterns, code nodes (JavaScript/Python), expression syntax, node configuration, validation, and MCP tools integration",
+  "author": {
+    "name": "Li Song",
+    "email": "lisong@example.com",
+    "url": "https://github.com/lisong"
+  },
+  "homepage": "https://github.com/lisong/lisong-n8n-skills",
+  "repository": "https://github.com/lisong/lisong-n8n-skills",
+  "license": "MIT",
+  "keywords": [
+    "n8n",
+    "workflow",
+    "automation",
+    "javascript",
+    "python",
+    "mcp-tools",
+    "skill-creator",
+    "code-node",
+    "expression-syntax",
+    "validation"
+  ]
+}
