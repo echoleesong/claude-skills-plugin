@@ -1,5 +1,7 @@
 # Claude Skills Plugin - n8n Development Collection
 
+[English](README.md) | [简体中文](README_CN.md)
+
 A comprehensive Claude Code plugin providing expert-level skills for n8n workflow development, automation, and integration.
 
 ## 📦 What's Included
