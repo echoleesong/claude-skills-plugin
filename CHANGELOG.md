@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the Li Song's n8n Skills Collection plugin will be documented in this file.
+All notable changes to the Claude Skills Plugin will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -9,7 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-#### Core n8n Skills
+#### Plugin Infrastructure
+- Created `.claude-plugin/plugin.json` with complete metadata
+- Created `.claude-plugin/marketplace.json` for GitHub distribution
+- Comprehensive bilingual README (English and Chinese)
+- MIT License
+- Structured changelog
+- Designed as a general-purpose, extensible skills repository
+
+#### n8n Development Skills (7 skills)
 - **n8n-workflow-patterns**: Comprehensive workflow architectural patterns
   - 5 core patterns: Webhook Processing, HTTP API Integration, Database Operations, AI Agent Workflows, Scheduled Tasks
   - Pattern selection guide and workflow creation checklist
@@ -53,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Workflow creation via API
   - Operation validation
 
-#### Meta Skills
+#### General Development Skills (1 skill)
 - **skill-creator**: Skill development guide
   - Skill design principles and best practices
   - Progressive disclosure patterns
@@ -61,29 +69,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 6-step skill creation process
   - Validation and packaging guidelines
 
-### Plugin Infrastructure
-- Created `.claude-plugin/plugin.json` with complete metadata
-- Created `.claude-plugin/marketplace.json` for GitHub distribution
-- Comprehensive README.md with installation and usage instructions
-- MIT License
-- Structured changelog
-
 ### Documentation
-- Detailed skill descriptions in README
+- Bilingual README (English and Chinese) with language switcher
+- Detailed skill descriptions and usage examples
 - Installation methods (GitHub, local, plugin directory)
-- Usage examples and activation triggers
+- Plugin philosophy: general-purpose, extensible, community-driven
+- Contributing guidelines with suggested skill domains
 - Plugin structure documentation
 
 ## [Unreleased]
 
 ### Planned
-- Additional n8n skills for advanced patterns
+- Additional skills for other development domains:
+  - API development and testing
+  - DevOps and CI/CD
+  - Data processing and analysis
+  - Frontend/Backend frameworks
+  - Testing frameworks
+  - Documentation generation
 - Integration examples and tutorials
-- Video demonstrations
 - Community contributions
 
 ---
 
 ## Version History
 
-- **1.0.0** (2026-01-14): Initial release with 9 comprehensive n8n skills
+- **1.0.0** (2026-01-14): Initial release as a general-purpose skills repository with 8 skills (7 n8n + 1 meta)

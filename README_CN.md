@@ -1,14 +1,14 @@
-# Claude Skills 插件 - n8n 开发技能集合
+# Claude Skills 插件
 
 [English](README.md) | [简体中文](README_CN.md)
 
-一个全面的 Claude Code 插件，为 n8n 工作流开发、自动化和集成提供专家级技能支持。
+一个全面且可扩展的 Claude Code 插件，为各种开发任务和工作流提供专家级技能支持。目前主要专注于 n8n 工作流开发、自动化和集成，未来计划扩展到其他领域。
 
 ## 📦 包含内容
 
-本插件包含 9 个专业的 n8n 开发技能：
+本插件目前包含 9 个专业技能，主要专注于 n8n 工作流开发：
 
-### 核心技能
+### n8n 开发技能（7 个技能）
 
 1. **n8n-workflow-patterns** - 经过验证的 n8n 工作流架构模式
    - 5 种核心模式：Webhook 处理、HTTP API 集成、数据库操作、AI 代理工作流、定时任务
@@ -45,12 +45,25 @@
    - 通过 API 创建和更新工作流
    - 验证节点操作
 
-### 元技能
+### 通用开发技能（2 个技能）
 
 8. **skill-creator** - 创建有效的 Claude Code 技能指南
    - 技能设计原则和最佳实践
    - 渐进式披露模式
    - 捆绑资源（脚本、参考文档、资产）
+
+9. **更多技能即将推出** - 本插件设计为可扩展的
+   - 未来技能可能涵盖：API 开发、测试、DevOps、数据处理等
+   - 欢迎社区贡献
+
+## 🎯 插件理念
+
+本插件设计为**通用技能仓库**，可以容纳任何领域的技能：
+
+- **当前**：主要是 n8n 工作流开发技能（7 个技能）
+- **未来**：将扩展到其他开发领域
+- **可扩展**：遵循 skill-creator 指南，易于添加新技能
+- **社区驱动**：开放接受社区贡献
 
 ## 🚀 安装方法
 
@@ -89,8 +102,11 @@ claude --plugin-dir ./claude-skills-plugin
 
 ## 📖 使用说明
 
-安装后，技能会在检测到相关任务时自动激活：
+安装后，技能会在检测到相关任务时自动激活。
 
+### 当前技能激活方式
+
+**n8n 开发：**
 - **构建工作流**：激活 `n8n-workflow-patterns`
 - **编写 JavaScript 代码**：激活 `n8n-code-javascript`
 - **编写 Python 代码**：激活 `n8n-code-python`
@@ -98,10 +114,13 @@ claude --plugin-dir ./claude-skills-plugin
 - **配置节点**：激活 `n8n-node-configuration`
 - **验证工作流**：激活 `n8n-validation-expert`
 - **使用 MCP 工具**：激活 `n8n-mcp-tools-expert`
+
+**通用开发：**
 - **创建技能**：激活 `skill-creator`
 
 ### 示例提示词
 
+**n8n 开发：**
 ```
 "帮我构建一个处理表单提交的 webhook 工作流"
 → 激活：n8n-workflow-patterns、n8n-node-configuration
@@ -111,14 +130,22 @@ claude --plugin-dir ./claude-skills-plugin
 
 "在部署前验证我的工作流"
 → 激活：n8n-validation-expert
+```
 
+**通用开发：**
+```
 "创建一个用于 PDF 处理的新技能"
+→ 激活：skill-creator
+
+"帮我设计一个用于 API 测试的技能"
 → 激活：skill-creator
 ```
 
 ## 🎯 技能详细说明
 
-### n8n-workflow-patterns
+### n8n 开发技能
+
+#### n8n-workflow-patterns
 来自真实 n8n 工作流的经过验证的架构模式。用于构建新工作流、设计工作流结构、选择工作流模式、规划工作流架构，或询问 webhook 处理、HTTP API 集成、数据库操作、AI 代理工作流或定时任务。
 
 ### n8n-code-javascript
@@ -136,10 +163,12 @@ claude --plugin-dir ./claude-skills-plugin
 ### n8n-validation-expert
 在部署前验证 n8n 工作流和节点配置。用于验证工作流结构、检查节点配置、检测错误，或获取常见问题的自动修复建议。
 
-### n8n-mcp-tools-expert
+#### n8n-mcp-tools-expert
 使用 n8n MCP（模型上下文协议）工具的专家指导。用于搜索节点、获取节点文档、通过 API 创建工作流、验证操作，或以编程方式使用 n8n。
 
-### skill-creator
+### 通用开发技能
+
+#### skill-creator
 创建有效的 Claude Code 技能指南。用于创建新技能、更新现有技能、设计技能结构、编写技能文档，或学习技能最佳实践。
 
 ## 📁 插件结构
@@ -166,7 +195,26 @@ claude-skills-plugin/
 
 ## 🤝 贡献
 
-欢迎贡献！请随时提交问题或拉取请求。
+欢迎贡献！本插件设计为社区驱动的技能仓库。
+
+### 如何贡献
+
+1. **添加新技能**：使用 `skill-creator` 技能来设计和实现新技能
+2. **改进现有技能**：提交 PR 来增强当前技能
+3. **报告问题**：帮助我们识别错误或需要改进的地方
+4. **建议新技能领域**：提出有价值的新技能领域
+
+### 我们感兴趣的技能领域
+
+- API 开发和测试
+- DevOps 和 CI/CD
+- 数据处理和分析
+- 前端/后端框架
+- 测试框架
+- 文档生成
+- 更多领域！
+
+请随时提交问题或拉取请求。
 
 ## 📄 许可证
 
@@ -184,8 +232,10 @@ MIT 许可证 - 详见 LICENSE 文件
 
 ## 🙏 致谢
 
-这些技能基于真实的 n8n 工作流开发经验和 n8n 社区的最佳实践构建。
+- n8n 技能基于真实的工作流开发经验和 n8n 社区的最佳实践构建
+- skill-creator 受 Claude Code 官方技能开发指南启发
+- 感谢所有贡献者和 Claude Code 社区
 
 ---
 
-**用 ❤️ 为 n8n 和 Claude Code 社区打造**
+**用 ❤️ 为 Claude Code 社区打造**

@@ -8,7 +8,7 @@
     {
       "name": "claude-skills-plugin",
       "source": "./",
-      "description": "Comprehensive n8n workflow development skills collection including workflow patterns, code nodes (JavaScript/Python), expression syntax, node configuration, validation, and MCP tools integration",
+      "description": "A comprehensive and extensible Claude Code skills repository. Currently includes 7 n8n workflow development skills and 1 skill-creator meta skill, with plans to expand to other development domains",
       "version": "1.0.0"
     }
   ]

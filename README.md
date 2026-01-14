@@ -1,14 +1,14 @@
-# Claude Skills Plugin - n8n Development Collection
+# Claude Skills Plugin
 
 [English](README.md) | [简体中文](README_CN.md)
 
-A comprehensive Claude Code plugin providing expert-level skills for n8n workflow development, automation, and integration.
+A comprehensive and extensible Claude Code plugin providing expert-level skills for various development tasks and workflows. Currently focused on n8n workflow development, automation, and integration, with plans to expand to other domains.
 
 ## 📦 What's Included
 
-This plugin contains 9 specialized skills for n8n workflow development:
+This plugin currently contains 9 specialized skills, primarily focused on n8n workflow development:
 
-### Core Skills
+### n8n Development Skills (7 skills)
 
 1. **n8n-workflow-patterns** - Proven architectural patterns for building n8n workflows
    - 5 core patterns: Webhook Processing, HTTP API Integration, Database Operations, AI Agent Workflows, Scheduled Tasks
@@ -45,12 +45,25 @@ This plugin contains 9 specialized skills for n8n workflow development:
    - Create and update workflows via API
    - Validate node operations
 
-### Meta Skills
+### General Development Skills (2 skills)
 
 8. **skill-creator** - Guide for creating effective Claude Code skills
    - Skill design principles and best practices
    - Progressive disclosure patterns
    - Bundled resources (scripts, references, assets)
+
+9. **More skills coming soon** - This plugin is designed to be extensible
+   - Future skills may cover: API development, testing, DevOps, data processing, etc.
+   - Community contributions welcome
+
+## 🎯 Plugin Philosophy
+
+This plugin is designed as a **general-purpose skills repository** that can accommodate skills from any domain:
+
+- **Currently**: Primarily n8n workflow development skills (7 skills)
+- **Future**: Will expand to include skills for other development areas
+- **Extensible**: Easy to add new skills following the skill-creator guidelines
+- **Community-driven**: Open to contributions from the community
 
 ## 🚀 Installation
 
@@ -89,8 +102,11 @@ claude --plugin-dir ./claude-skills-plugin
 
 ## 📖 Usage
 
-Once installed, the skills will automatically activate when relevant tasks are detected:
+Once installed, the skills will automatically activate when relevant tasks are detected.
 
+### Current Skills Activation
+
+**n8n Development:**
 - **Building workflows**: `n8n-workflow-patterns` activates
 - **Writing JavaScript code**: `n8n-code-javascript` activates
 - **Writing Python code**: `n8n-code-python` activates
@@ -98,10 +114,13 @@ Once installed, the skills will automatically activate when relevant tasks are d
 - **Configuring nodes**: `n8n-node-configuration` activates
 - **Validating workflows**: `n8n-validation-expert` activates
 - **Using MCP tools**: `n8n-mcp-tools-expert` activates
+
+**General Development:**
 - **Creating skills**: `skill-creator` activates
 
 ### Example Prompts
 
+**n8n Development:**
 ```
 "Help me build a webhook workflow that processes form submissions"
 → Activates: n8n-workflow-patterns, n8n-node-configuration
@@ -111,14 +130,22 @@ Once installed, the skills will automatically activate when relevant tasks are d
 
 "Validate my workflow before deployment"
 → Activates: n8n-validation-expert
+```
 
+**General Development:**
+```
 "Create a new skill for PDF processing"
+→ Activates: skill-creator
+
+"Help me design a skill for API testing"
 → Activates: skill-creator
 ```
 
 ## 🎯 Skill Descriptions
 
-### n8n-workflow-patterns
+### n8n Development Skills
+
+#### n8n-workflow-patterns
 Proven workflow architectural patterns from real n8n workflows. Use when building new workflows, designing workflow structure, choosing workflow patterns, planning workflow architecture, or asking about webhook processing, HTTP API integration, database operations, AI agent workflows, or scheduled tasks.
 
 ### n8n-code-javascript
@@ -139,7 +166,9 @@ Validate n8n workflows and node configurations before deployment. Use when valid
 ### n8n-mcp-tools-expert
 Expert guidance for using n8n MCP (Model Context Protocol) tools. Use when searching for nodes, getting node documentation, creating workflows via API, validating operations, or working with n8n programmatically.
 
-### skill-creator
+### General Development Skills
+
+#### skill-creator
 Guide for creating effective Claude Code skills. Use when creating new skills, updating existing skills, designing skill structure, writing skill documentation, or learning skill best practices.
 
 ## 📁 Plugin Structure
@@ -165,7 +194,26 @@ claude-skills-plugin/
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit issues or pull requests.
+Contributions are welcome! This plugin is designed to be a community-driven skills repository.
+
+### How to Contribute
+
+1. **Add new skills**: Use the `skill-creator` skill to design and implement new skills
+2. **Improve existing skills**: Submit PRs to enhance current skills
+3. **Report issues**: Help us identify bugs or areas for improvement
+4. **Suggest new skill domains**: Propose new areas where skills would be valuable
+
+### Skill Domains We're Interested In
+
+- API development and testing
+- DevOps and CI/CD
+- Data processing and analysis
+- Frontend/Backend frameworks
+- Testing frameworks
+- Documentation generation
+- And more!
+
+Please feel free to submit issues or pull requests.
 
 ## 📄 License
 
@@ -183,8 +231,10 @@ See [CHANGELOG.md](CHANGELOG.md) for version history and updates.
 
 ## 🙏 Acknowledgments
 
-These skills are built based on real-world n8n workflow development experience and best practices from the n8n community.
+- n8n skills are built based on real-world workflow development experience and best practices from the n8n community
+- skill-creator is inspired by Claude Code's official skill development guidelines
+- Thanks to all contributors and the Claude Code community
 
 ---
 
-**Made with ❤️ for the n8n and Claude Code communities**
+**Made with ❤️ for the Claude Code community**
