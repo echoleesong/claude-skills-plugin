@@ -1,14 +1,14 @@
 {
-  "name": "lisong-n8n-skills",
+  "name": "claude-skills-plugin",
   "version": "1.0.0",
   "description": "Comprehensive n8n workflow development skills collection including workflow patterns, code nodes (JavaScript/Python), expression syntax, node configuration, validation, and MCP tools integration",
   "author": {
     "name": "Li Song",
-    "email": "lisong@example.com",
-    "url": "https://github.com/lisong"
+    "email": "echoleesong@example.com",
+    "url": "https://github.com/echoleesong"
   },
-  "homepage": "https://github.com/lisong/lisong-n8n-skills",
-  "repository": "https://github.com/lisong/lisong-n8n-skills",
+  "homepage": "https://github.com/echoleesong/claude-skills-plugin",
+  "repository": "https://github.com/echoleesong/claude-skills-plugin",
   "license": "MIT",
   "keywords": [
     "n8n",

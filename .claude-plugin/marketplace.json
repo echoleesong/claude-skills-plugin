@@ -1,12 +1,12 @@
 {
-  "name": "lisong-n8n-skills-marketplace",
+  "name": "claude-skills-plugin-marketplace",
   "owner": {
     "name": "Li Song",
-    "email": "lisong@example.com"
+    "email": "echoleesong@example.com"
   },
   "plugins": [
     {
-      "name": "lisong-n8n-skills",
+      "name": "claude-skills-plugin",
       "source": "./",
       "description": "Comprehensive n8n workflow development skills collection including workflow patterns, code nodes (JavaScript/Python), expression syntax, node configuration, validation, and MCP tools integration",
       "version": "1.0.0"

@@ -1,4 +1,4 @@
-# Li Song's n8n Skills Collection
+# Claude Skills Plugin - n8n Development Collection
 
 A comprehensive Claude Code plugin providing expert-level skills for n8n workflow development, automation, and integration.
 
@@ -56,33 +56,33 @@ This plugin contains 9 specialized skills for n8n workflow development:
 
 ```bash
 # Add the marketplace
-/plugin marketplace add lisong/lisong-n8n-skills
+/plugin marketplace add echoleesong/claude-skills-plugin
 
 # Install the plugin
-/plugin install lisong-n8n-skills@lisong-lisong-n8n-skills
+/plugin install claude-skills-plugin@echoleesong-claude-skills-plugin
 ```
 
 ### Method 2: Install from Local Path
 
 ```bash
 # Clone the repository
-git clone https://github.com/lisong/lisong-n8n-skills.git
+git clone https://github.com/echoleesong/claude-skills-plugin.git
 
 # Add local marketplace
-/plugin marketplace add ./lisong-n8n-skills
+/plugin marketplace add ./claude-skills-plugin
 
 # Install the plugin
-/plugin install lisong-n8n-skills
+/plugin install claude-skills-plugin
 ```
 
 ### Method 3: Use Plugin Directory
 
 ```bash
 # Clone the repository
-git clone https://github.com/lisong/lisong-n8n-skills.git
+git clone https://github.com/echoleesong/claude-skills-plugin.git
 
 # Run Claude Code with plugin directory
-claude --plugin-dir ./lisong-n8n-skills
+claude --plugin-dir ./claude-skills-plugin
 ```
 
 ## 📖 Usage
@@ -143,7 +143,7 @@ Guide for creating effective Claude Code skills. Use when creating new skills, u
 ## 📁 Plugin Structure
 
 ```
-lisong-n8n-skills/
+claude-skills-plugin/
 ├── .claude-plugin/
 │   ├── plugin.json          # Plugin metadata
 │   └── marketplace.json     # Marketplace configuration
@@ -171,8 +171,8 @@ MIT License - see LICENSE file for details
 
 ## 🔗 Links
 
-- **Repository**: https://github.com/lisong/lisong-n8n-skills
-- **Issues**: https://github.com/lisong/lisong-n8n-skills/issues
+- **Repository**: https://github.com/echoleesong/claude-skills-plugin
+- **Issues**: https://github.com/echoleesong/claude-skills-plugin/issues
 - **n8n Documentation**: https://docs.n8n.io
 
 ## 📝 Changelog
