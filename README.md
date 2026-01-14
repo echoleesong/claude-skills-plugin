@@ -1,8 +1,10 @@
 # Claude Skills Plugin
 
-[English](README.md) | [简体中文](README_CN.md)
+[English](README.md) | [简体中文](README_CN.md) | [Quick Start](QUICKSTART.md)
 
 A comprehensive and extensible Claude Code plugin providing expert-level skills for various development tasks and workflows. Currently focused on n8n workflow development, automation, and integration, with plans to expand to other domains.
+
+> **🚀 Quick Install**: `/plugin marketplace add echoleesong/claude-skills-plugin` → `/plugin install claude-skills-plugin@echoleesong-claude-skills-plugin`
 
 ## 📦 What's Included
 

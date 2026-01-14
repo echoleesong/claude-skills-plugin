@@ -1,8 +1,10 @@
 # Claude Skills 插件
 
-[English](README.md) | [简体中文](README_CN.md)
+[English](README.md) | [简体中文](README_CN.md) | [快速开始](QUICKSTART_CN.md)
 
 一个全面且可扩展的 Claude Code 插件，为各种开发任务和工作流提供专家级技能支持。目前主要专注于 n8n 工作流开发、自动化和集成，未来计划扩展到其他领域。
+
+> **🚀 快速安装**: `/plugin marketplace add echoleesong/claude-skills-plugin` → `/plugin install claude-skills-plugin@echoleesong-claude-skills-plugin`
 
 ## 📦 包含内容
 
