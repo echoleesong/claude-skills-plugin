@@ -4,7 +4,7 @@
 
 A comprehensive and extensible Claude Code plugin providing expert-level skills for various development tasks and workflows. Currently focused on n8n workflow development, automation, and integration, with plans to expand to other domains.
 
-> **🚀 Quick Install**: `/plugin marketplace add echoleesong/claude-skills-plugin` → `/plugin install claude-skills-plugin@echoleesong-claude-skills-plugin`
+> **🚀 Quick Install (Recommended)**: Clone skills directly to `~/.claude/skills/` for **highest priority**
 
 ## 📦 What's Included
 
@@ -69,7 +69,66 @@ This plugin is designed as a **general-purpose skills repository** that can acco
 
 ## 🚀 Installation
 
-### Method 1: Install from GitHub
+### Understanding Skills Priority
+
+Claude Code Skills are loaded with different priorities (highest to lowest):
+
+| Priority | Level | Location | Scope |
+|:--------:|:------|:---------|:------|
+| **1** (Highest) | Enterprise | Managed settings | Organization-wide |
+| **2** | Personal | `~/.claude/skills/` | All your projects |
+| **3** | Project | `.claude/skills/` | Current project |
+| **4** (Lowest) | Plugin | Plugin `skills/` directory | Plugin users |
+
+**We recommend Method 1** for the best experience, as it gives your Skills the highest non-enterprise priority.
+
+---
+
+### ⭐ Method 1: Personal Skills Directory (Recommended)
+
+Install directly to your personal skills folder for **highest priority**:
+
+#### macOS / Linux
+
+```bash
+# Clone skills directly to personal skills directory
+git clone https://github.com/echoleesong/claude-skills-plugin.git ~/.claude/skills-repo
+
+# Link all skills to personal directory
+mkdir -p ~/.claude/skills && \
+ln -sf ~/.claude/skills-repo/skills/* ~/.claude/skills/
+```
+
+#### Windows (PowerShell)
+
+```powershell
+# Clone skills directly to personal skills directory
+git clone https://github.com/echoleesong/claude-skills-plugin.git "$env:USERPROFILE\.claude\skills-repo"
+
+# Create personal skills directory and link skills
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
+Get-ChildItem "$env:USERPROFILE\.claude\skills-repo\skills" -Directory | ForEach-Object {
+    New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
+}
+```
+
+#### Update Skills
+
+```bash
+# macOS / Linux
+cd ~/.claude/skills-repo && git pull
+
+# Windows (PowerShell)
+cd "$env:USERPROFILE\.claude\skills-repo"; git pull
+```
+
+✅ **Advantages**: Highest priority (Personal level), takes precedence over all plugins, easy to update with `git pull`.
+
+---
+
+### Method 2: Plugin Marketplace (Standard)
+
+Install as a plugin via Claude Code marketplace:
 
 ```bash
 # Add the marketplace
@@ -79,69 +138,52 @@ This plugin is designed as a **general-purpose skills repository** that can acco
 /plugin install claude-skills-plugin@echoleesong-claude-skills-plugin
 ```
 
-### Method 2: Install from Local Path
+⚠️ **Note**: Plugin Skills have the **lowest priority**. If you need higher priority, use Method 1 or upgrade after installation:
+
+<details>
+<summary>📌 Upgrade Plugin to Personal Priority</summary>
 
 ```bash
-# Clone the repository
-git clone https://github.com/echoleesong/claude-skills-plugin.git
-
-# Add local marketplace
-/plugin marketplace add ./claude-skills-plugin
-
-# Install the plugin
-/plugin install claude-skills-plugin
-```
-
-### Method 3: Use Plugin Directory
-
-```bash
-# Clone the repository
-git clone https://github.com/echoleesong/claude-skills-plugin.git
-
-# Run Claude Code with plugin directory
-claude --plugin-dir ./claude-skills-plugin
-```
-
-## ⭐ Priority Installation (Recommended)
-
-By default, plugin Skills have the **lowest priority** in Claude Code. If you want this plugin's Skills to take precedence over other plugins (including official Anthropic skills), run the following command after installation:
-
-### macOS / Linux
-
-```bash
-# Create personal skills directory and link plugin skills
+# macOS / Linux: Link plugin skills to personal directory
 mkdir -p ~/.claude/skills && \
 ln -sf ~/.claude/plugins/cache/claude-skills-plugin-marketplace/claude-skills-plugin/*/skills/* ~/.claude/skills/
 ```
 
-### Windows (PowerShell)
-
 ```powershell
-# Create personal skills directory
+# Windows (PowerShell)
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
-
-# Get plugin skills path and create symbolic links
 $pluginPath = Get-ChildItem "$env:USERPROFILE\.claude\plugins\cache\claude-skills-plugin-marketplace\claude-skills-plugin\*\skills" | Select-Object -First 1
 Get-ChildItem $pluginPath -Directory | ForEach-Object {
     New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
 }
 ```
 
-### Why?
+</details>
 
-Claude Code Skills priority (highest to lowest):
-1. **Enterprise** - Managed settings
-2. **Personal** - `~/.claude/skills/` ← Your skills will be here
-3. **Project** - `.claude/skills/`
-4. **Plugin** - Default location (lowest)
+---
 
-After running the command above, this plugin's Skills will be loaded at Personal level, taking precedence over all other plugins.
+### Method 3: Project-Level Installation
+
+Install for a specific project only:
+
+```bash
+# In your project directory
+git clone https://github.com/echoleesong/claude-skills-plugin.git .claude/skills-repo
+
+# Link skills to project directory
+mkdir -p .claude/skills && \
+ln -sf .claude/skills-repo/skills/* .claude/skills/
+```
+
+✅ **Use case**: When you only need these skills for a specific project.
+
+---
 
 ### Verify Installation
 
 Restart Claude Code and ask: "What Skills are available?"
 
-You should see this plugin's Skills listed with higher priority.
+You should see this plugin's Skills listed. If you used Method 1, they will have Personal-level priority.
 
 ## 📖 Usage
 

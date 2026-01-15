@@ -4,7 +4,7 @@
 
 一个全面且可扩展的 Claude Code 插件，为各种开发任务和工作流提供专家级技能支持。目前主要专注于 n8n 工作流开发、自动化和集成，未来计划扩展到其他领域。
 
-> **🚀 快速安装**: `/plugin marketplace add echoleesong/claude-skills-plugin` → `/plugin install claude-skills-plugin@echoleesong-claude-skills-plugin`
+> **🚀 推荐安装**：直接克隆到 `~/.claude/skills/` 以获得**最高优先级**
 
 ## 📦 包含内容
 
@@ -69,7 +69,66 @@
 
 ## 🚀 安装方法
 
-### 方法 1：从 GitHub 安装
+### 理解 Skills 优先级
+
+Claude Code Skills 按不同优先级加载（从高到低）：
+
+| 优先级 | 级别 | 位置 | 作用范围 |
+|:------:|:-----|:-----|:---------|
+| **1** (最高) | Enterprise | 企业托管配置 | 组织内所有用户 |
+| **2** | Personal | `~/.claude/skills/` | 你的所有项目 |
+| **3** | Project | `.claude/skills/` | 当前项目 |
+| **4** (最低) | Plugin | 插件 `skills/` 目录 | 安装该插件的用户 |
+
+**我们推荐方法 1**，因为它能让你的 Skills 获得最高的非企业级优先级。
+
+---
+
+### ⭐ 方法 1：个人 Skills 目录（推荐）
+
+直接安装到个人 skills 文件夹，获得**最高优先级**：
+
+#### macOS / Linux
+
+```bash
+# 克隆到个人 skills 仓库目录
+git clone https://github.com/echoleesong/claude-skills-plugin.git ~/.claude/skills-repo
+
+# 将所有 skills 链接到个人目录
+mkdir -p ~/.claude/skills && \
+ln -sf ~/.claude/skills-repo/skills/* ~/.claude/skills/
+```
+
+#### Windows (PowerShell)
+
+```powershell
+# 克隆到个人 skills 仓库目录
+git clone https://github.com/echoleesong/claude-skills-plugin.git "$env:USERPROFILE\.claude\skills-repo"
+
+# 创建个人 skills 目录并链接
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
+Get-ChildItem "$env:USERPROFILE\.claude\skills-repo\skills" -Directory | ForEach-Object {
+    New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
+}
+```
+
+#### 更新 Skills
+
+```bash
+# macOS / Linux
+cd ~/.claude/skills-repo && git pull
+
+# Windows (PowerShell)
+cd "$env:USERPROFILE\.claude\skills-repo"; git pull
+```
+
+✅ **优势**：最高优先级（Personal 级别），优先于所有插件，使用 `git pull` 轻松更新。
+
+---
+
+### 方法 2：插件市场（标准方式）
+
+通过 Claude Code 插件市场安装：
 
 ```bash
 # 添加市场
@@ -79,69 +138,52 @@
 /plugin install claude-skills-plugin@echoleesong-claude-skills-plugin
 ```
 
-### 方法 2：从本地路径安装
+⚠️ **注意**：插件 Skills 优先级**最低**。如需更高优先级，请使用方法 1 或在安装后升级：
+
+<details>
+<summary>📌 将插件升级为 Personal 优先级</summary>
 
 ```bash
-# 克隆仓库
-git clone https://github.com/echoleesong/claude-skills-plugin.git
-
-# 添加本地市场
-/plugin marketplace add ./claude-skills-plugin
-
-# 安装插件
-/plugin install claude-skills-plugin
-```
-
-### 方法 3：使用插件目录
-
-```bash
-# 克隆仓库
-git clone https://github.com/echoleesong/claude-skills-plugin.git
-
-# 使用插件目录运行 Claude Code
-claude --plugin-dir ./claude-skills-plugin
-```
-
-## ⭐ 优先级安装（推荐）
-
-默认情况下，插件中的 Skills 在 Claude Code 中优先级**最低**。如果你希望本插件的 Skills 优先于其他插件（包括官方 Anthropic skills），请在安装后执行以下命令：
-
-### macOS / Linux
-
-```bash
-# 创建个人 skills 目录并链接插件 skills
+# macOS / Linux：将插件 skills 链接到个人目录
 mkdir -p ~/.claude/skills && \
 ln -sf ~/.claude/plugins/cache/claude-skills-plugin-marketplace/claude-skills-plugin/*/skills/* ~/.claude/skills/
 ```
 
-### Windows (PowerShell)
-
 ```powershell
-# 创建个人 skills 目录
+# Windows (PowerShell)
 New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
-
-# 获取插件 skills 路径并创建符号链接
 $pluginPath = Get-ChildItem "$env:USERPROFILE\.claude\plugins\cache\claude-skills-plugin-marketplace\claude-skills-plugin\*\skills" | Select-Object -First 1
 Get-ChildItem $pluginPath -Directory | ForEach-Object {
     New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
 }
 ```
 
-### 为什么需要这样做？
+</details>
 
-Claude Code Skills 优先级（从高到低）：
-1. **Enterprise** - 企业托管配置
-2. **Personal** - `~/.claude/skills/` ← 执行命令后你的 skills 在这里
-3. **Project** - `.claude/skills/`
-4. **Plugin** - 默认位置（优先级最低）
+---
 
-执行上述命令后，本插件的 Skills 将以 Personal 级别加载，优先于所有其他插件。
+### 方法 3：项目级安装
+
+仅为特定项目安装：
+
+```bash
+# 在项目目录中
+git clone https://github.com/echoleesong/claude-skills-plugin.git .claude/skills-repo
+
+# 将 skills 链接到项目目录
+mkdir -p .claude/skills && \
+ln -sf .claude/skills-repo/skills/* .claude/skills/
+```
+
+✅ **适用场景**：仅在特定项目中需要这些 skills 时使用。
+
+---
 
 ### 验证安装
 
 重启 Claude Code 并询问："What Skills are available?"
 
-你应该能看到本插件的 Skills 以更高优先级列出。
+你应该能看到本插件的 Skills。如果使用方法 1，它们将拥有 Personal 级别优先级。
 
 ## 📖 使用说明
 
