@@ -102,6 +102,47 @@ git clone https://github.com/echoleesong/claude-skills-plugin.git
 claude --plugin-dir ./claude-skills-plugin
 ```
 
+## ⭐ 优先级安装（推荐）
+
+默认情况下，插件中的 Skills 在 Claude Code 中优先级**最低**。如果你希望本插件的 Skills 优先于其他插件（包括官方 Anthropic skills），请在安装后执行以下命令：
+
+### macOS / Linux
+
+```bash
+# 创建个人 skills 目录并链接插件 skills
+mkdir -p ~/.claude/skills && \
+ln -sf ~/.claude/plugins/cache/claude-skills-plugin-marketplace/claude-skills-plugin/*/skills/* ~/.claude/skills/
+```
+
+### Windows (PowerShell)
+
+```powershell
+# 创建个人 skills 目录
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
+
+# 获取插件 skills 路径并创建符号链接
+$pluginPath = Get-ChildItem "$env:USERPROFILE\.claude\plugins\cache\claude-skills-plugin-marketplace\claude-skills-plugin\*\skills" | Select-Object -First 1
+Get-ChildItem $pluginPath -Directory | ForEach-Object {
+    New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
+}
+```
+
+### 为什么需要这样做？
+
+Claude Code Skills 优先级（从高到低）：
+1. **Enterprise** - 企业托管配置
+2. **Personal** - `~/.claude/skills/` ← 执行命令后你的 skills 在这里
+3. **Project** - `.claude/skills/`
+4. **Plugin** - 默认位置（优先级最低）
+
+执行上述命令后，本插件的 Skills 将以 Personal 级别加载，优先于所有其他插件。
+
+### 验证安装
+
+重启 Claude Code 并询问："What Skills are available?"
+
+你应该能看到本插件的 Skills 以更高优先级列出。
+
 ## 📖 使用说明
 
 安装后，技能会在检测到相关任务时自动激活。
