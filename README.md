@@ -8,7 +8,7 @@ A comprehensive and extensible Claude Code plugin providing expert-level skills 
 
 ## 📦 What's Included
 
-This plugin currently contains 9 specialized skills, primarily focused on n8n workflow development:
+This plugin currently contains 10 specialized skills, primarily focused on n8n workflow development:
 
 ### n8n Development Skills (7 skills)
 
@@ -47,14 +47,20 @@ This plugin currently contains 9 specialized skills, primarily focused on n8n wo
    - Create and update workflows via API
    - Validate node operations
 
-### General Development Skills (2 skills)
+### General Development Skills (3 skills)
 
 8. **skill-creator** - Guide for creating effective Claude Code skills
    - Skill design principles and best practices
    - Progressive disclosure patterns
    - Bundled resources (scripts, references, assets)
 
-9. **More skills coming soon** - This plugin is designed to be extensible
+9. **md-to-pptx** - Convert Markdown to PowerPoint presentations
+   - Convert existing Markdown files to PPTX
+   - Generate presentations from scratch with AI assistance
+   - Multiple themes (business, tech_dark, education, neumorphism)
+   - Custom template support
+
+10. **More skills coming soon** - This plugin is designed to be extensible
    - Future skills may cover: API development, testing, DevOps, data processing, etc.
    - Community contributions welcome
 
@@ -202,6 +208,7 @@ Once installed, the skills will automatically activate when relevant tasks are d
 
 **General Development:**
 - **Creating skills**: `skill-creator` activates
+- **Creating presentations**: `md-to-pptx` activates
 
 ### Example Prompts
 
@@ -224,6 +231,12 @@ Once installed, the skills will automatically activate when relevant tasks are d
 
 "Help me design a skill for API testing"
 → Activates: skill-creator
+
+"Help me create a presentation about machine learning"
+→ Activates: md-to-pptx
+
+"Convert this markdown file to PowerPoint"
+→ Activates: md-to-pptx
 ```
 
 ## 🎯 Skill Descriptions
@@ -256,6 +269,9 @@ Expert guidance for using n8n MCP (Model Context Protocol) tools. Use when searc
 #### skill-creator
 Guide for creating effective Claude Code skills. Use when creating new skills, updating existing skills, designing skill structure, writing skill documentation, or learning skill best practices.
 
+#### md-to-pptx
+Convert Markdown documents to PowerPoint presentations or generate presentations from scratch using AI. Use when users want to create PPT/PPTX files, convert MD to slides, generate presentations, make slideshows, or ask for help with PowerPoint creation. Supports custom templates, multiple themes (business, tech_dark, education, neumorphism), and intelligent content layout.
+
 ## 📁 Plugin Structure
 
 ```
@@ -271,7 +287,8 @@ claude-skills-plugin/
 │   ├── n8n-node-configuration/
 │   ├── n8n-validation-expert/
 │   ├── n8n-mcp-tools-expert/
-│   └── skill-creator/
+│   ├── skill-creator/
+│   └── md-to-pptx/
 ├── LICENSE
 ├── README.md
 └── CHANGELOG.md
