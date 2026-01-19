@@ -8,7 +8,7 @@
 
 ## 📦 包含内容
 
-本插件目前包含 9 个专业技能，主要专注于 n8n 工作流开发：
+本插件目前包含 10 个专业技能，主要专注于 n8n 工作流开发：
 
 ### n8n 开发技能（7 个技能）
 
@@ -47,14 +47,20 @@
    - 通过 API 创建和更新工作流
    - 验证节点操作
 
-### 通用开发技能（2 个技能）
+### 通用开发技能（3 个技能）
 
 8. **skill-creator** - 创建有效的 Claude Code 技能指南
    - 技能设计原则和最佳实践
    - 渐进式披露模式
    - 捆绑资源（脚本、参考文档、资产）
 
-9. **更多技能即将推出** - 本插件设计为可扩展的
+9. **md-to-pptx** - 将 Markdown 转换为 PowerPoint 演示文稿
+   - 将现有 Markdown 文件转换为 PPTX
+   - 使用 AI 辅助从零生成演示文稿
+   - 多种主题（商务、科技暗色、教育、新拟态）
+   - 支持自定义模板
+
+10. **更多技能即将推出** - 本插件设计为可扩展的
    - 未来技能可能涵盖：API 开发、测试、DevOps、数据处理等
    - 欢迎社区贡献
 
@@ -202,6 +208,7 @@ ln -sf .claude/skills-repo/skills/* .claude/skills/
 
 **通用开发：**
 - **创建技能**：激活 `skill-creator`
+- **创建演示文稿**：激活 `md-to-pptx`
 
 ### 示例提示词
 
@@ -224,6 +231,12 @@ ln -sf .claude/skills-repo/skills/* .claude/skills/
 
 "帮我设计一个用于 API 测试的技能"
 → 激活：skill-creator
+
+"帮我创建一个关于机器学习的演示文稿"
+→ 激活：md-to-pptx
+
+"将这个 Markdown 文件转换为 PowerPoint"
+→ 激活：md-to-pptx
 ```
 
 ## 🎯 技能详细说明
@@ -256,6 +269,9 @@ ln -sf .claude/skills-repo/skills/* .claude/skills/
 #### skill-creator
 创建有效的 Claude Code 技能指南。用于创建新技能、更新现有技能、设计技能结构、编写技能文档，或学习技能最佳实践。
 
+#### md-to-pptx
+将 Markdown 文档转换为 PowerPoint 演示文稿，或使用 AI 从零生成演示文稿。用于创建 PPT/PPTX 文件、将 MD 转换为幻灯片、生成演示文稿、制作幻灯片，或寻求 PowerPoint 创建帮助。支持自定义模板、多种主题（商务、科技暗色、教育、新拟态）和智能内容布局。
+
 ## 📁 插件结构
 
 ```
@@ -271,7 +287,8 @@ claude-skills-plugin/
 │   ├── n8n-node-configuration/
 │   ├── n8n-validation-expert/
 │   ├── n8n-mcp-tools-expert/
-│   └── skill-creator/
+│   ├── skill-creator/
+│   └── md-to-pptx/
 ├── LICENSE
 ├── README.md
 ├── README_CN.md
