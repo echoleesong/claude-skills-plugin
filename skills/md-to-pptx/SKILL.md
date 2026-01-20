@@ -1,6 +1,6 @@
 ---
 name: md-to-pptx
-description: Convert Markdown documents to PowerPoint presentations or generate presentations from scratch using AI. Use when users want to create PPT/PPTX files, convert MD to slides, generate presentations, make slideshows, or ask for help with PowerPoint creation. Supports custom templates, multiple themes (business, tech, education), and intelligent content layout.
+description: Convert Markdown documents to PowerPoint presentations or generate presentations from scratch using AI. Use when users want to create PPT/PPTX files, convert MD to slides, generate presentations, make slideshows, or ask for help with PowerPoint creation. Supports custom templates, multiple themes (business, tech_dark, education, neumorphism), and intelligent content layout.
 ---
 
 # md-to-pptx
@@ -15,6 +15,8 @@ Install required packages before use:
 pip install python-pptx Pillow
 ```
 
+**Note**: Use `python3` instead of `python` on systems where Python 3 is not the default.
+
 ## Workflow
 
 ### Step 1: Gather Requirements
@@ -22,8 +24,8 @@ pip install python-pptx Pillow
 Ask the user about their presentation needs:
 
 1. **Source**: Do you have an existing Markdown file, or should I generate content?
-2. **Theme**: Which style? (business, tech_dark, education, or custom template)
-3. **Save location**: Where to save the PPT? (default: current directory)
+2. **Theme**: Which style? (business, tech_dark, education, neumorphism, or custom template)
+3. **Save location**: Where to save the PPT? (default: user's current working directory)
 4. **Purpose**: What's the presentation for? (This helps with content and layout decisions)
 
 ### Step 2: Determine Approach
@@ -54,8 +56,8 @@ python scripts/md_to_pptx.py <input.md> [options]
 
 Options:
   -o, --output      Output filename (default: input name + .pptx)
-  -d, --directory   Output directory (default: current directory)
-  -t, --theme       Theme: business, tech_dark, education
+  -d, --directory   Output directory (default: user's current directory)
+  -t, --theme       Theme: business, tech_dark, education, neumorphism
   --template        Path to custom .pptx template
   --no-template     Generate without using built-in template
   -q, --quiet       Suppress progress output
@@ -77,6 +79,9 @@ python scripts/md_to_pptx.py presentation.md -d ~/Desktop
 
 # Use tech dark theme
 python scripts/md_to_pptx.py presentation.md --theme tech_dark
+
+# Use neumorphism theme
+python scripts/md_to_pptx.py presentation.md --theme neumorphism
 
 # Use custom template
 python scripts/md_to_pptx.py presentation.md --template company.pptx

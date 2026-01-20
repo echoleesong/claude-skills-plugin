@@ -97,38 +97,67 @@ Install directly to your personal skills folder for **highest priority**:
 #### macOS / Linux
 
 ```bash
-# Clone skills directly to personal skills directory
+# Clone to personal skills repository directory
 git clone https://github.com/echoleesong/claude-skills-plugin.git ~/.claude/skills-repo
 
-# Link all skills to personal directory
-mkdir -p ~/.claude/skills && \
-ln -sf ~/.claude/skills-repo/skills/* ~/.claude/skills/
+# Run automatic install script (creates symlinks)
+cd ~/.claude/skills-repo && ./install.sh
 ```
 
-#### Windows (PowerShell)
+#### Windows (PowerShell, requires Administrator)
 
 ```powershell
-# Clone skills directly to personal skills directory
+# Clone to personal skills repository directory
 git clone https://github.com/echoleesong/claude-skills-plugin.git "$env:USERPROFILE\.claude\skills-repo"
 
-# Create personal skills directory and link skills
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
-Get-ChildItem "$env:USERPROFILE\.claude\skills-repo\skills" -Directory | ForEach-Object {
-    New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
-}
+# Run automatic install script (requires Administrator for symlinks)
+cd "$env:USERPROFILE\.claude\skills-repo"
+.\install.ps1
 ```
 
 #### Update Skills
 
 ```bash
 # macOS / Linux
-cd ~/.claude/skills-repo && git pull
+cd ~/.claude/skills-repo && git pull && ./install.sh
 
 # Windows (PowerShell)
-cd "$env:USERPROFILE\.claude\skills-repo"; git pull
+cd "$env:USERPROFILE\.claude\skills-repo"; git pull; .\install.ps1
 ```
 
-✅ **Advantages**: Highest priority (Personal level), takes precedence over all plugins, easy to update with `git pull`.
+#### 🔄 Setup Auto-Sync (Optional)
+
+Automatically sync new skills after `git pull`:
+
+```bash
+# macOS / Linux
+cd ~/.claude/skills-repo && ./setup-hooks.sh
+
+# After setup, git pull will automatically run install.sh
+```
+
+✅ **Advantages**: Highest priority (Personal level), takes precedence over all plugins, easy to update with `git pull`, supports auto-sync.
+
+<details>
+<summary>📌 Manual Installation (without scripts)</summary>
+
+If you prefer not to use the install scripts, you can manually create symlinks:
+
+**macOS / Linux:**
+```bash
+mkdir -p ~/.claude/skills && \
+ln -sf ~/.claude/skills-repo/skills/* ~/.claude/skills/
+```
+
+**Windows (PowerShell):**
+```powershell
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
+Get-ChildItem "$env:USERPROFILE\.claude\skills-repo\skills" -Directory | ForEach-Object {
+    New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
+}
+```
+
+</details>
 
 ---
 

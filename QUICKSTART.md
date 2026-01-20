@@ -68,14 +68,27 @@ Make sure you've added the marketplace first:
 /plugin install claude-skills-plugin@echoleesong-claude-skills-plugin
 ```
 
-### Method 2: Local Development
+### Method 2: Personal Skills Directory (Highest Priority)
+```bash
+# Clone and run install script
+git clone https://github.com/echoleesong/claude-skills-plugin.git ~/.claude/skills-repo
+cd ~/.claude/skills-repo && ./install.sh
+
+# Update later with
+cd ~/.claude/skills-repo && git pull && ./install.sh
+
+# Optional: Setup auto-sync on git pull
+./setup-hooks.sh
+```
+
+### Method 3: Local Development
 ```bash
 git clone https://github.com/echoleesong/claude-skills-plugin.git
 /plugin marketplace add ./claude-skills-plugin
 /plugin install claude-skills-plugin
 ```
 
-### Method 3: Temporary Use (No Installation)
+### Method 4: Temporary Use (No Installation)
 ```bash
 git clone https://github.com/echoleesong/claude-skills-plugin.git
 claude --plugin-dir ./claude-skills-plugin

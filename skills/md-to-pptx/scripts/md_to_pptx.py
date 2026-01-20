@@ -30,6 +30,7 @@ BUILTIN_TEMPLATES = {
     "business": os.path.join(skill_dir, "assets", "templates", "business_template.pptx"),
     "tech_dark": os.path.join(skill_dir, "assets", "templates", "tech_dark_template.pptx"),
     "education": os.path.join(skill_dir, "assets", "templates", "education_template.pptx"),
+    "neumorphism": os.path.join(skill_dir, "assets", "templates", "蓝黄色新拟态行业调研报告PPT模板.pptx"),
 }
 
 
@@ -291,32 +292,46 @@ Examples:
         parser.print_help()
         return 1
 
+    # Get the original working directory (where user invoked the command)
+    # This ensures output goes to user's directory, not skill's directory
+    original_cwd = os.getcwd()
+
     # Determine output path
     output_path = args.output
     if output_path is None:
         base_name = os.path.splitext(os.path.basename(args.input))[0]
         output_path = f"{base_name}.pptx"
 
-    # Apply directory
+    # Apply directory - default to original working directory
     if args.directory and args.directory != ".":
-        # Expand ~ and make absolute
+        # User specified a directory
         output_dir = os.path.expanduser(args.directory)
         if not os.path.isabs(output_dir):
-            output_dir = os.path.abspath(output_dir)
+            output_dir = os.path.join(original_cwd, output_dir)
+    else:
+        # Default: use original working directory (user's current directory)
+        output_dir = original_cwd
 
-        # Create directory if needed
-        if not os.path.exists(output_dir):
-            try:
-                os.makedirs(output_dir)
-            except Exception as e:
-                print(f"❌ Cannot create directory: {output_dir}")
-                return 1
+    # Create directory if needed
+    if not os.path.exists(output_dir):
+        try:
+            os.makedirs(output_dir)
+        except Exception as e:
+            print(f"❌ Cannot create directory: {output_dir}")
+            return 1
 
+    # Make output path absolute
+    if not os.path.isabs(output_path):
         output_path = os.path.join(output_dir, os.path.basename(output_path))
+
+    # Make input path absolute relative to original cwd
+    input_path = args.input
+    if not os.path.isabs(input_path):
+        input_path = os.path.join(original_cwd, input_path)
 
     # Convert
     success, final_path, warnings = convert_md_to_pptx(
-        args.input,
+        input_path,
         output_path,
         theme=args.theme,
         template_path=args.template,
