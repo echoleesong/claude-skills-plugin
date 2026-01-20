@@ -21,12 +21,35 @@ pip install python-pptx Pillow
 
 ### Step 1: Gather Requirements
 
-Ask the user about their presentation needs:
+**IMPORTANT**: Before generating any content, you MUST ask the user the following questions using the AskUserQuestion tool:
 
-1. **Source**: Do you have an existing Markdown file, or should I generate content?
-2. **Theme**: Which style? (business, tech_dark, education, neumorphism, or custom template)
-3. **Save location**: Where to save the PPT? (default: user's current working directory)
-4. **Purpose**: What's the presentation for? (This helps with content and layout decisions)
+1. **PPT页数 (Slide Count)**: 您希望PPT包含多少页？
+   - Options: 5-10页, 10-15页, 15-20页, 20页以上
+
+2. **面向用户群体 (Target Audience)**: 这个PPT的目标受众是谁？
+   - Options: 企业高管/决策者, 技术团队/开发者, 学生/教育场景, 普通大众/客户
+
+3. **PPT演示场景 (Presentation Context)**: 这个PPT将在什么场景下使用？
+   - Options: 商务汇报/会议, 产品发布/路演, 培训/教学, 学术报告/研究分享
+
+4. **PPT模板选择 (Template Selection)**: 是否使用已有的PPT模板？
+   - Options:
+     - business (商务风格 - 白色背景，深蓝标题)
+     - tech_dark (科技风格 - 深色背景，绿色点缀)
+     - education (教育风格 - 暖色背景，橙色点缀)
+     - neumorphism (新拟态风格 - 蓝黄色现代风格)
+     - 不使用模板/自定义
+
+Additional questions to ask:
+
+5. **Source**: Do you have an existing Markdown file, or should I generate content?
+6. **Save location**: Where to save the PPT? (default: user's current working directory)
+
+Use the answers to guide content generation:
+- **Slide Count**: Determines the depth and detail of content
+- **Target Audience**: Affects language complexity, terminology, and examples
+- **Presentation Context**: Influences tone, structure, and visual style
+- **Template**: Sets the visual theme for the presentation
 
 ### Step 2: Determine Approach
 
