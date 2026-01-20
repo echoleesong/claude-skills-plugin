@@ -100,35 +100,64 @@ Claude Code Skills 按不同优先级加载（从高到低）：
 # 克隆到个人 skills 仓库目录
 git clone https://github.com/echoleesong/claude-skills-plugin.git ~/.claude/skills-repo
 
-# 将所有 skills 链接到个人目录
-mkdir -p ~/.claude/skills && \
-ln -sf ~/.claude/skills-repo/skills/* ~/.claude/skills/
+# 运行自动安装脚本（创建软链接）
+cd ~/.claude/skills-repo && ./install.sh
 ```
 
-#### Windows (PowerShell)
+#### Windows (PowerShell，需要管理员权限)
 
 ```powershell
 # 克隆到个人 skills 仓库目录
 git clone https://github.com/echoleesong/claude-skills-plugin.git "$env:USERPROFILE\.claude\skills-repo"
 
-# 创建个人 skills 目录并链接
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
-Get-ChildItem "$env:USERPROFILE\.claude\skills-repo\skills" -Directory | ForEach-Object {
-    New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
-}
+# 运行自动安装脚本（需要管理员权限创建软链接）
+cd "$env:USERPROFILE\.claude\skills-repo"
+.\install.ps1
 ```
 
 #### 更新 Skills
 
 ```bash
 # macOS / Linux
-cd ~/.claude/skills-repo && git pull
+cd ~/.claude/skills-repo && git pull && ./install.sh
 
 # Windows (PowerShell)
-cd "$env:USERPROFILE\.claude\skills-repo"; git pull
+cd "$env:USERPROFILE\.claude\skills-repo"; git pull; .\install.ps1
 ```
 
-✅ **优势**：最高优先级（Personal 级别），优先于所有插件，使用 `git pull` 轻松更新。
+#### 🔄 设置自动同步（可选）
+
+让 `git pull` 后自动同步新 skills：
+
+```bash
+# macOS / Linux
+cd ~/.claude/skills-repo && ./setup-hooks.sh
+
+# 设置后，每次 git pull 会自动运行 install.sh
+```
+
+✅ **优势**：最高优先级（Personal 级别），优先于所有插件，使用 `git pull` 轻松更新，支持自动同步。
+
+<details>
+<summary>📌 手动安装方式（不使用脚本）</summary>
+
+如果你不想使用安装脚本，可以手动创建软链接：
+
+**macOS / Linux:**
+```bash
+mkdir -p ~/.claude/skills && \
+ln -sf ~/.claude/skills-repo/skills/* ~/.claude/skills/
+```
+
+**Windows (PowerShell):**
+```powershell
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\skills"
+Get-ChildItem "$env:USERPROFILE\.claude\skills-repo\skills" -Directory | ForEach-Object {
+    New-Item -ItemType SymbolicLink -Force -Path "$env:USERPROFILE\.claude\skills\$($_.Name)" -Target $_.FullName
+}
+```
+
+</details>
 
 ---
 

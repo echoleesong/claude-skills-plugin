@@ -68,14 +68,27 @@
 /plugin install claude-skills-plugin@echoleesong-claude-skills-plugin
 ```
 
-### 方法2：本地开发
+### 方法2：个人 Skills 目录（最高优先级）
+```bash
+# 克隆并运行安装脚本
+git clone https://github.com/echoleesong/claude-skills-plugin.git ~/.claude/skills-repo
+cd ~/.claude/skills-repo && ./install.sh
+
+# 以后更新使用
+cd ~/.claude/skills-repo && git pull && ./install.sh
+
+# 可选：设置 git pull 后自动同步
+./setup-hooks.sh
+```
+
+### 方法3：本地开发
 ```bash
 git clone https://github.com/echoleesong/claude-skills-plugin.git
 /plugin marketplace add ./claude-skills-plugin
 /plugin install claude-skills-plugin
 ```
 
-### 方法3：临时使用（无需安装）
+### 方法4：临时使用（无需安装）
 ```bash
 git clone https://github.com/echoleesong/claude-skills-plugin.git
 claude --plugin-dir ./claude-skills-plugin

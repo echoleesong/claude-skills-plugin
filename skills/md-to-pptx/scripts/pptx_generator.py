@@ -37,6 +37,7 @@ class ThemeStyle(Enum):
     BUSINESS = "business"
     TECH_DARK = "tech_dark"
     EDUCATION = "education"
+    NEUMORPHISM = "neumorphism"
 
 
 @dataclass
@@ -95,6 +96,19 @@ THEMES: Dict[str, ThemeConfig] = {
         title_size=36,
         body_size=18,
         code_size=14
+    ),
+    "neumorphism": ThemeConfig(
+        name="Neumorphism",
+        background_color=(240, 243, 249),
+        title_color=(45, 55, 72),
+        text_color=(74, 85, 104),
+        accent_color=(66, 153, 225),
+        code_bg_color=(226, 232, 240),
+        title_font="Arial",
+        body_font="Arial",
+        title_size=36,
+        body_size=18,
+        code_size=14
     )
 }
 
@@ -117,7 +131,7 @@ class PPTXGenerator:
         Initialize generator with theme or template.
 
         Args:
-            theme: Theme name (business, tech_dark, education)
+            theme: Theme name (business, tech_dark, education, neumorphism)
             template_path: Optional path to custom .pptx template
         """
         self.template_path = template_path
@@ -125,6 +139,7 @@ class PPTXGenerator:
         self.prs: Optional[Presentation] = None
         self.warnings: List[str] = []
         self.progress_callback = None
+        self._use_template_background = template_path is not None
 
     def set_progress_callback(self, callback):
         """Set callback function for progress updates."""
@@ -188,15 +203,36 @@ class PPTXGenerator:
 
     def _add_blank_slide(self) -> Any:
         """Add a blank slide to the presentation."""
-        blank_layout = self.prs.slide_layouts[6]  # Blank layout
-        return self.prs.slides.add_slide(blank_layout)
+        # Try to find a blank layout, fallback to last available layout
+        layouts = self.prs.slide_layouts
+        num_layouts = len(layouts)
+
+        # Common blank layout indices to try
+        blank_indices = [6, 5, num_layouts - 1, 0]
+
+        for idx in blank_indices:
+            if idx < num_layouts:
+                try:
+                    return self.prs.slides.add_slide(layouts[idx])
+                except Exception:
+                    continue
+
+        # Last resort: use first available layout
+        return self.prs.slides.add_slide(layouts[0])
 
     def _set_background(self, slide):
-        """Set slide background color based on theme."""
-        background = slide.background
-        fill = background.fill
-        fill.solid()
-        fill.fore_color.rgb = RGBColor(*self.theme.background_color)
+        """Set slide background color based on theme (skip if using template)."""
+        if self._use_template_background:
+            # Don't override template background
+            return
+        try:
+            background = slide.background
+            fill = background.fill
+            fill.solid()
+            fill.fore_color.rgb = RGBColor(*self.theme.background_color)
+        except Exception:
+            # Some templates may not support background modification
+            pass
 
     def _add_title_shape(self, slide, title: str, top: float = 0.3, height: float = 0.8) -> Any:
         """Add title text box to slide."""
