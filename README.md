@@ -8,7 +8,24 @@ A comprehensive and extensible Claude Code plugin providing expert-level skills 
 
 ## 📦 What's Included
 
-This plugin currently contains 10 specialized skills, primarily focused on n8n workflow development:
+This plugin currently contains **14 specialized skills**, covering n8n workflow development and **Skill lifecycle management**:
+
+### Skill Lifecycle Management (3 skills) - **NEW**
+
+11. **skill-factory** - Automated Skill Factory
+    - Convert any GitHub repository into a standardized Skill with one command
+    - Automatically fetch repository metadata (commit hash, README)
+    - Generate compliant directory structure with extended metadata
+
+12. **skill-manager** - Skill Lifecycle Manager
+    - Concurrently check update status for all Skills
+    - Support batch scan, update, and delete operations
+    - Generate status reports (outdated/current/unmanaged)
+
+13. **skill-evolution** - Skill Evolution Manager
+    - Persist lessons learned from conversations to `evolution.json`
+    - Smart stitching: automatically write experience to SKILL.md
+    - Cross-version preservation: experience survives Skill updates
 
 ### n8n Development Skills (7 skills)
 
@@ -47,7 +64,7 @@ This plugin currently contains 10 specialized skills, primarily focused on n8n w
    - Create and update workflows via API
    - Validate node operations
 
-### General Development Skills (3 skills)
+### General Development Skills (4 skills)
 
 8. **skill-creator** - Guide for creating effective Claude Code skills
    - Skill design principles and best practices
@@ -60,7 +77,11 @@ This plugin currently contains 10 specialized skills, primarily focused on n8n w
    - Multiple themes (business, tech_dark, education, neumorphism)
    - Custom template support
 
-10. **More skills coming soon** - This plugin is designed to be extensible
+10. **skill-lookup** - Skill discovery and installation tool
+    - Search and discover available Skills
+    - Install and manage Skills
+
+14. **More skills coming soon** - This plugin is designed to be extensible
    - Future skills may cover: API development, testing, DevOps, data processing, etc.
    - Community contributions welcome
 
@@ -226,6 +247,12 @@ Once installed, the skills will automatically activate when relevant tasks are d
 
 ### Current Skills Activation
 
+**Skill Lifecycle Management:**
+- **Create Skill from GitHub**: `/skill-factory <url>` or "Package this repo into a skill"
+- **Check updates**: `/skill-manager check` or "Check my Skills for updates"
+- **List Skills**: `/skill-manager list` or "List my Skills"
+- **Record experience**: `/skill-evolution` or "Review the conversation and save lessons"
+
 **n8n Development:**
 - **Building workflows**: `n8n-workflow-patterns` activates
 - **Writing JavaScript code**: `n8n-code-javascript` activates
@@ -240,6 +267,18 @@ Once installed, the skills will automatically activate when relevant tasks are d
 - **Creating presentations**: `md-to-pptx` activates
 
 ### Example Prompts
+
+**Skill Lifecycle Management:**
+```
+"Package https://github.com/yt-dlp/yt-dlp into a Skill"
+→ Activates: skill-factory
+
+"Check my Skills for updates"
+→ Activates: skill-manager
+
+"Save the lessons from this conversation"
+→ Activates: skill-evolution
+```
 
 **n8n Development:**
 ```
@@ -269,6 +308,17 @@ Once installed, the skills will automatically activate when relevant tasks are d
 ```
 
 ## 🎯 Skill Descriptions
+
+### Skill Lifecycle Management Skills
+
+#### skill-factory
+Automated factory for converting GitHub repositories into standardized AI skills. Use when user provides a GitHub URL and wants to "package", "wrap", or "create a skill" from it. Automatically fetches repository metadata, generates standard directory structure, and injects extended metadata for lifecycle management.
+
+#### skill-manager
+Skill lifecycle manager for batch scanning Skills directory, checking GitHub updates, performing version upgrades, and managing Skills inventory. Supports `/skill-manager check`, `/skill-manager list`, `/skill-manager delete` commands.
+
+#### skill-evolution
+Skill experience evolution manager. Analyzes user feedback at the end of conversations, extracts best practices and solutions, persists to `evolution.json` and stitches to SKILL.md. Use when user says "review", "record experience", "save this tip".
 
 ### n8n Development Skills
 
@@ -309,6 +359,9 @@ claude-skills-plugin/
 │   ├── plugin.json          # Plugin metadata
 │   └── marketplace.json     # Marketplace configuration
 ├── skills/
+│   ├── skill-factory/       # Skill Factory (NEW)
+│   ├── skill-manager/       # Skill Manager (NEW)
+│   ├── skill-evolution/     # Skill Evolution (NEW)
 │   ├── n8n-workflow-patterns/
 │   ├── n8n-code-javascript/
 │   ├── n8n-code-python/
@@ -317,10 +370,34 @@ claude-skills-plugin/
 │   ├── n8n-validation-expert/
 │   ├── n8n-mcp-tools-expert/
 │   ├── skill-creator/
+│   ├── skill-lookup/
 │   └── md-to-pptx/
+├── scripts/                 # Standalone executable scripts (NEW)
+│   ├── check_updates.py     # Batch check updates
+│   ├── batch_evolve.py      # Batch align evolution
+│   └── validate_all.py      # Batch validate metadata
+├── docs/                    # Documentation
+│   ├── skill-lifecycle-development-plan.md
+│   └── references/
+│       └── metadata-spec.md # Metadata specification
 ├── LICENSE
 ├── README.md
 └── CHANGELOG.md
+```
+
+## 🔧 Command Line Tools
+
+This plugin provides standalone Python scripts for CI/CD and batch operations:
+
+```bash
+# Check update status for all Skills
+python scripts/check_updates.py --summary
+
+# Batch validate Skills metadata
+python scripts/validate_all.py --strict
+
+# Batch align evolution.json
+python scripts/batch_evolve.py --dry-run
 ```
 
 ## 🤝 Contributing

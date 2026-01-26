@@ -5,6 +5,56 @@ All notable changes to the Claude Skills Plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-01-23
+
+### Added
+
+#### Skill Lifecycle Management System (NEW)
+A complete lifecycle management system for Skills, inspired by modern DevOps practices:
+
+- **skill-factory**: Automated Skill Factory
+  - Convert any GitHub repository into a standardized Skill
+  - Lightweight version check via `git ls-remote` (no full clone needed)
+  - Auto-generate SKILL.md with extended metadata
+  - Scripts: `fetch_github_info.py`, `create_skill.py`
+
+- **skill-manager**: Skill Lifecycle Manager
+  - Concurrent update checking for all Skills
+  - Status reporting (outdated/current/unmanaged/error)
+  - Inventory management (list, delete)
+  - Scripts: `scan_and_check.py`, `list_skills.py`, `delete_skill.py`
+
+- **skill-evolution**: Skill Evolution Manager
+  - Persist lessons learned to `evolution.json`
+  - Smart stitching: auto-inject experience into SKILL.md
+  - Cross-version preservation: experience survives Skill updates
+  - Scripts: `merge_evolution.py`, `smart_stitch.py`, `align_all.py`
+
+#### Extended Metadata Specification
+- New optional fields in SKILL.md frontmatter:
+  - `source_url`: Source repository URL
+  - `source_hash`: Commit hash for version tracking
+  - `version`: Semantic version number
+  - `created_at`, `updated_at`: Timestamps
+  - `evolution_enabled`: Enable/disable experience evolution
+- Full backward compatibility with existing Skills
+- Documented in `docs/references/metadata-spec.md`
+
+#### Standalone CLI Scripts
+New `scripts/` directory with independent Python scripts for CI/CD:
+- `check_updates.py`: Batch check update status (exit code 1 if outdated)
+- `validate_all.py`: Batch validate metadata (supports strict mode)
+- `batch_evolve.py`: Batch align evolution.json to SKILL.md
+
+#### Documentation
+- `docs/skill-lifecycle-development-plan.md`: Complete development plan
+- `docs/references/metadata-spec.md`: Extended metadata specification v1.0
+- Updated README.md and README_CN.md with new features
+
+### Changed
+- Plugin now contains 14 skills (was 10)
+- Updated plugin structure documentation
+
 ## [1.0.0] - 2026-01-14
 
 ### Added
@@ -94,4 +144,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.1.0** (2026-01-23): Skill Lifecycle Management System - 3 new skills, CLI tools, extended metadata
 - **1.0.0** (2026-01-14): Initial release as a general-purpose skills repository with 8 skills (7 n8n + 1 meta)
