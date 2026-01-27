@@ -3,10 +3,16 @@
 merge_evolution.py - 增量合并经验数据
 
 将新的经验数据合并到 evolution.json，支持去重和增量更新。
+支持分层架构：可以选择保存到全局层或项目层。
 
 用法:
+    # 传统模式（保存到 skill 目录）
     python merge_evolution.py <skill_dir> <json_string>
     python merge_evolution.py <skill_dir> <json_file>
+
+    # 分层模式（保存到指定层）
+    python merge_evolution.py <skill_name> <json_string> --layer global
+    python merge_evolution.py <skill_name> <json_string> --layer project --project /path/to/project
 
 输入 JSON 格式:
     {
@@ -146,16 +152,78 @@ def merge_evolution(skill_dir: str, new_data: Union[str, dict]) -> bool:
     return True
 
 
+def merge_evolution_layered(skill_name: str, new_data: Union[str, dict],
+                            layer: str = "global", project_path: str = None) -> bool:
+    """
+    分层模式：合并经验数据到指定层
+
+    Args:
+        skill_name: Skill 名称
+        new_data: JSON 字符串或字典
+        layer: 目标层（"global" 或 "project"）
+        project_path: 项目路径（project 层需要）
+
+    Returns:
+        bool: 是否成功
+    """
+    try:
+        from layered_merge import LayeredEvolutionManager
+    except ImportError:
+        print("错误: 无法导入 layered_merge 模块", file=sys.stderr)
+        return False
+
+    # 解析输入数据
+    if isinstance(new_data, str):
+        if os.path.isfile(new_data):
+            try:
+                new_data = json.loads(Path(new_data).read_text(encoding='utf-8'))
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"错误: 无法读取 JSON 文件: {e}", file=sys.stderr)
+                return False
+        else:
+            try:
+                new_data = json.loads(new_data)
+            except json.JSONDecodeError as e:
+                print(f"错误: 无法解析 JSON: {e}", file=sys.stderr)
+                return False
+
+    if not isinstance(new_data, dict):
+        print("错误: 输入数据必须是 JSON 对象", file=sys.stderr)
+        return False
+
+    manager = LayeredEvolutionManager(skill_name, project_path)
+    result = manager.save_to_layer(layer, new_data)
+
+    if result.get("status") == "success":
+        print(f"✅ 已合并经验数据到 {layer} 层: {skill_name}")
+        print(f"   保存位置: {result.get('path')}")
+        return True
+    else:
+        print(f"错误: {result.get('message')}", file=sys.stderr)
+        return False
+
+
 def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='增量合并经验数据到 evolution.json')
-    parser.add_argument('skill_dir', help='Skill 目录路径')
+    parser.add_argument('skill_dir', help='Skill 目录路径或名称（分层模式）')
     parser.add_argument('json_data', help='JSON 字符串或 JSON 文件路径')
+    parser.add_argument('--layer', '-l', choices=['global', 'project', 'local'],
+                        default='local', help='目标层（默认 local 即 skill 目录）')
+    parser.add_argument('--project', '-p', help='项目路径（project 层需要）', default=None)
 
     args = parser.parse_args()
 
-    success = merge_evolution(args.skill_dir, args.json_data)
+    if args.layer == 'local':
+        # 传统模式：保存到 skill 目录
+        success = merge_evolution(args.skill_dir, args.json_data)
+    else:
+        # 分层模式：保存到指定层
+        # skill_dir 参数在分层模式下作为 skill_name 使用
+        skill_name = Path(args.skill_dir).name
+        success = merge_evolution_layered(skill_name, args.json_data, args.layer, args.project)
+
     sys.exit(0 if success else 1)
 
 

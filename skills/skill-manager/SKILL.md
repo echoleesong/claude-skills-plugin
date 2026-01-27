@@ -1,11 +1,11 @@
 ---
 name: skill-manager
-description: Skill 生命周期管理器。用于批量扫描 Skills 目录、检查 GitHub 更新、执行版本升级、管理 Skills 库存。当用户需要"检查更新"、"列出 Skills"、"删除 Skill"或"管理 Skills"时使用此工具。
+description: Skill 生命周期管理器。用于批量扫描 Skills 目录、检查 GitHub 更新、执行版本升级、管理 Skills 库存、管理经验层（promote/pull）。当用户需要"检查更新"、"列出 Skills"、"删除 Skill"、"管理 Skills"、"提升经验"、"拉取经验"时使用此工具。
 ---
 
 # Skill Manager
 
-管理 Skills 的完整生命周期：扫描、检查更新、升级、删除。
+管理 Skills 的完整生命周期：扫描、检查更新、升级、删除、经验层管理。
 
 ## 核心功能
 
@@ -14,6 +14,7 @@ description: Skill 生命周期管理器。用于批量扫描 Skills 目录、�
 3. **状态报告**: 生成状态报告，标识 outdated/current/unmanaged/error
 4. **更新工作流**: 引导 Agent 执行 Skill 升级
 5. **库存管理**: 列出、删除 Skills
+6. **经验层管理**: promote/pull 命令在层级间同步经验
 
 ## 使用场景
 
@@ -94,6 +95,105 @@ Total: 12 skills
 3. 可选：备份到 `.skill-backup` 目录
 4. 执行删除
 
+## 经验层管理
+
+### 查看经验状态
+
+**触发方式**:
+- `/skill-manager evo-status <skill_name>`
+- "查看 xxx 的经验状态"
+
+**工作流**:
+```bash
+python scripts/evo_manager.py evo-status <skill_name> [--project <path>]
+```
+
+**示例输出**:
+```
+Skill: n8n-code-javascript
+Project: /Users/xxx/my-project
+
+Layers:
+  [✗] Upstream
+      Path: ~/.claude/skills-repo/skills/n8n-code-javascript/evolution.json
+  [✓] Global
+      Path: ~/.claude/evolutions/n8n-code-javascript/evolution.json
+      Items: 5 total
+        - preferences: 2
+        - fixes: 2
+        - contexts: 1
+  [✓] Project
+      Path: /Users/xxx/my-project/.claude/evolutions/n8n-code-javascript.json
+      Items: 3 total
+        - preferences: 1
+        - fixes: 2
+
+Merged Total: 8 items
+```
+
+### 提升经验到全局层
+
+**触发方式**:
+- `/skill-manager promote <skill_name>`
+- "把这个项目的经验提升到全局"
+
+**工作流**:
+```bash
+python scripts/evo_manager.py promote <skill_name> [--project <path>] [--fields f1,f2]
+```
+
+将当前项目的经验复制到全局层，供所有项目共享。
+
+### 从全局层拉取经验
+
+**触发方式**:
+- `/skill-manager pull <skill_name>`
+- "把全局经验拉到这个项目"
+
+**工作流**:
+```bash
+python scripts/evo_manager.py pull <skill_name> [--project <path>]
+```
+
+将全局层的经验复制到当前项目，用于新项目初始化。
+
+### 同步所有经验状态
+
+**触发方式**:
+- `/skill-manager sync-evolutions`
+- "查看所有 Skills 的经验状态"
+
+**工作流**:
+```bash
+python scripts/evo_manager.py sync [--skills-dir <path>] [--project <path>]
+```
+
+**示例输出**:
+```
+============================================================
+Skills Evolution Status Summary
+============================================================
+Skills Directory: ~/.claude/skills-repo/skills
+Project Path: /Users/xxx/my-project
+Total Skills: 14
+
+Summary:
+  - Has upstream evolution: 2
+  - Has global evolution: 5
+  - Has project evolution: 3
+  - No evolution data: 8
+
+Skills Detail:
+------------------------------------------------------------
+Name                            Up   Glb   Prj  Total
+------------------------------------------------------------
+md-to-pptx                       -     ✓     -      3
+n8n-code-javascript              -     ✓     ✓      8
+n8n-code-python                  -     -     -      0
+...
+------------------------------------------------------------
+```
+
 ## 脚本说明
 
 | 脚本 | 功能 | 参数 |
@@ -101,6 +201,16 @@ Total: 12 skills
 | `scan_and_check.py` | 扫描并检查更新 | `<skills_dir> [--json\|--summary\|--table]` |
 | `list_skills.py` | 列出所有 Skills | `<skills_dir> [--json] [--verbose]` |
 | `delete_skill.py` | 删除 Skill | `<skill_name> <skills_dir> [--backup] [--force]` |
+| `evo_manager.py` | 经验层管理 | `<command> <skill_name> [options]` |
+
+### evo_manager.py 命令
+
+| 命令 | 功能 |
+|------|------|
+| `evo-status <skill>` | 查看经验分布状态 |
+| `promote <skill>` | 项目经验 → 全局层 |
+| `pull <skill>` | 全局经验 → 项目层 |
+| `sync` | 查看所有 skills 经验状态 |
 
 ## 元数据依赖
 
@@ -131,9 +241,13 @@ Total: 12 skills
 2. **备份删除**: 删除重要 Skill 前使用 `--backup` 选项
 3. **更新后对齐**: 更新 Skill 后运行 `skill-evolution` 的 `align_all.py` 恢复经验
 4. **版本控制**: 使用 Git 管理 Skills 目录，便于回滚
+5. **经验管理**:
+   - 新项目开始时运行 `pull` 获取全局经验
+   - 项目结束时运行 `promote` 提升有价值的经验
+   - 定期运行 `sync` 查看经验分布
 
 ## 与其他 Skill 的协作
 
 - **skill-factory**: 创建的 Skills 自动包含生命周期管理所需的元数据
-- **skill-evolution**: 更新后调用 `align_all.py` 恢复用户经验
+- **skill-evolution**: 更新后调用 `align_all.py` 恢复用户经验；共享 `layered_merge.py`
 - **skill-creator**: 遵循相同的元数据规范
