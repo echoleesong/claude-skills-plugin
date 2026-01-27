@@ -5,6 +5,58 @@ All notable changes to the Claude Skills Plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-01-27
+
+### Added
+
+#### Layered Evolution Architecture (NEW)
+A three-layer architecture for cross-project experience management:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  Upstream Layer   │  skills-repo/skills/<skill>/evolution.json
+│  (Community)      │  Community best practices via PR
+├───────────────────┼─────────────────────────────────────────┤
+│  Global Layer     │  ~/.claude/evolutions/<skill>/evolution.json
+│  (Personal)       │  Personal universal experiences
+├───────────────────┼─────────────────────────────────────────┤
+│  Project Layer    │  <project>/.claude/evolutions/<skill>.json
+│  (Project)        │  Project-specific experiences
+└─────────────────────────────────────────────────────────────┘
+```
+
+- **layered_merge.py**: Core script for layered experience management
+  - `status`: View experience distribution across layers
+  - `merge`: Combine experiences from all three layers (with deduplication)
+  - `save`: Save experience to specific layer (global/project)
+  - `promote`: Promote project experiences to global layer
+  - `pull`: Pull global experiences to project layer
+
+- **evo_manager.py**: Experience layer management commands for skill-manager
+  - `evo-status <skill>`: View experience status for a skill
+  - `promote <skill>`: Promote project experiences to global
+  - `pull <skill>`: Pull global experiences to project
+  - `sync`: View all skills' experience status
+
+#### Cross-Project Experience Workflow
+- **New project initialization**: `pull` to inherit global experiences
+- **Daily development**: `/evolve` to record experiences to global or project layer
+- **Project completion**: `promote` to share valuable experiences globally
+- **Community contribution**: PR high-quality experiences to upstream
+
+### Changed
+
+- **merge_evolution.py**: Added `--layer` and `--project` options for layered saving
+- **smart_stitch.py**: Added `--layered` mode for three-layer merging
+- **skill-evolution/SKILL.md**: Updated with three-layer architecture documentation
+- **skill-manager/SKILL.md**: Added promote/pull/sync commands documentation
+
+### Benefits
+- **Experience persistence**: Experiences survive skill updates (stored separately)
+- **Cross-project sharing**: promote/pull enables experience flow between projects
+- **Community contribution**: High-quality experiences can be PR'd to upstream
+- **Continuous evolution**: Every usage is a learning opportunity
+
 ## [1.1.0] - 2026-01-23
 
 ### Added
@@ -144,5 +196,6 @@ New `scripts/` directory with independent Python scripts for CI/CD:
 
 ## Version History
 
+- **1.2.0** (2026-01-27): Layered Evolution Architecture - Three-layer experience management for cross-project sharing
 - **1.1.0** (2026-01-23): Skill Lifecycle Management System - 3 new skills, CLI tools, extended metadata
 - **1.0.0** (2026-01-14): Initial release as a general-purpose skills repository with 8 skills (7 n8n + 1 meta)
