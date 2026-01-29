@@ -119,6 +119,39 @@ dependencies:
 |------|------|
 | `scripts/fetch_github_info.py` | 获取 GitHub 仓库元数据（轻量级，无需 clone） |
 | `scripts/create_skill.py` | 创建标准化 Skill 目录结构 |
+| `scripts/import_github_skill.py` | **完整导入** GitHub 仓库为本地 Skill（支持并行下载） |
+
+### import_github_skill.py（推荐）
+
+高效地从 GitHub 仓库下载所有文件并创建本地 Skill。
+
+**特点：**
+- 使用 GitHub API 获取目录结构（单次请求）
+- 并行下载所有文件（10 线程）
+- API 限流时自动切换到 git clone 备选方案
+- 支持自定义 Skill 名称
+- 支持移除源信息（`--no-source`）
+
+**用法：**
+```bash
+# 基本用法
+python scripts/import_github_skill.py <github_url> <output_dir>
+
+# 自定义名称
+python scripts/import_github_skill.py <github_url> <output_dir> --name my-skill
+
+# 不保留源信息（作为全新本地 Skill）
+python scripts/import_github_skill.py <github_url> <output_dir> --no-source
+
+# 组合使用
+python scripts/import_github_skill.py https://github.com/user/repo ./skills --name my-skill --no-source
+```
+
+**示例：**
+```bash
+# 导入并重命名
+python scripts/import_github_skill.py https://github.com/PenglongHuang/chinese-novelist-skill ./skills --name chinese-novelist --no-source
+```
 
 ## 最佳实践
 
