@@ -8,7 +8,7 @@ A comprehensive and extensible Claude Code plugin providing expert-level skills 
 
 ## 📦 What's Included
 
-This plugin currently contains **14 specialized skills**, covering n8n workflow development and **Skill lifecycle management**:
+This plugin currently contains **15 specialized skills**, covering n8n workflow development, **Skill lifecycle management**, and **Claude model authentication**:
 
 ### Skill Lifecycle Management (3 skills) - **NEW**
 
@@ -64,7 +64,7 @@ This plugin currently contains **14 specialized skills**, covering n8n workflow 
    - Create and update workflows via API
    - Validate node operations
 
-### General Development Skills (4 skills)
+### General Development Skills (5 skills)
 
 8. **skill-creator** - Guide for creating effective Claude Code skills
    - Skill design principles and best practices
@@ -81,7 +81,13 @@ This plugin currently contains **14 specialized skills**, covering n8n workflow 
     - Search and discover available Skills
     - Install and manage Skills
 
-14. **More skills coming soon** - This plugin is designed to be extensible
+15. **claude-verifier** - Claude Model Authentication Tool (NEW)
+    - 9 verification methods to detect fake or downgraded models
+    - Tokenizer test, count_tokens API test, knowledge cutoff detection
+    - Tool invocation, signature validation, temperature parameter tests
+    - Achieves 95%+ accuracy when using all methods together
+
+16. **More skills coming soon** - This plugin is designed to be extensible
    - Future skills may cover: API development, testing, DevOps, data processing, etc.
    - Community contributions welcome
 
@@ -265,6 +271,7 @@ Once installed, the skills will automatically activate when relevant tasks are d
 **General Development:**
 - **Creating skills**: `skill-creator` activates
 - **Creating presentations**: `md-to-pptx` activates
+- **Verifying Claude model**: `claude-verifier` activates
 
 ### Example Prompts
 
@@ -305,6 +312,12 @@ Once installed, the skills will automatically activate when relevant tasks are d
 
 "Convert this markdown file to PowerPoint"
 → Activates: md-to-pptx
+
+"Verify if my Claude API key is authentic"
+→ Activates: claude-verifier
+
+"Check if my Claude model is downgraded"
+→ Activates: claude-verifier
 ```
 
 ## 🎯 Skill Descriptions
@@ -351,6 +364,12 @@ Guide for creating effective Claude Code skills. Use when creating new skills, u
 #### md-to-pptx
 Convert Markdown documents to PowerPoint presentations or generate presentations from scratch using AI. Use when users want to create PPT/PPTX files, convert MD to slides, generate presentations, make slideshows, or ask for help with PowerPoint creation. Supports custom templates, multiple themes (business, tech_dark, education, neumorphism), and intelligent content layout.
 
+#### skill-lookup
+Skill discovery and installation tool. Use when searching for available skills, discovering new capabilities, or installing and managing skills.
+
+#### claude-verifier
+Claude model authentication tool for detecting fake or downgraded models. Use when verifying Claude API authenticity, checking for model downgrades (e.g., 4.5冒充 4.6), or testing third-party API reliability. Provides 9 verification methods including tokenizer test, count_tokens API, knowledge cutoff detection, and signature validation with 95%+ accuracy.
+
 ## 📁 Plugin Structure
 
 ```
@@ -362,6 +381,7 @@ claude-skills-plugin/
 │   ├── skill-factory/       # Skill Factory (NEW)
 │   ├── skill-manager/       # Skill Manager (NEW)
 │   ├── skill-evolution/     # Skill Evolution (NEW)
+│   ├── claude-verifier/     # Claude Model Authenticator (NEW)
 │   ├── n8n-workflow-patterns/
 │   ├── n8n-code-javascript/
 │   ├── n8n-code-python/

@@ -5,6 +5,16 @@ All notable changes to the Claude Skills Plugin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **claude-verifier**: New skill for Claude model authentication
+  - 9 verification methods to detect fake or downgraded models
+  - Tokenizer test, count_tokens API, knowledge cutoff detection
+  - Tool invocation, signature validation, temperature parameter tests
+  - Achieves 95%+ accuracy when using all methods together
+
 ## [1.2.0] - 2026-01-27
 
 ### Added
