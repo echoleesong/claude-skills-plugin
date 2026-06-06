@@ -67,9 +67,9 @@ THEMES: Dict[str, ThemeConfig] = {
         code_bg_color=(236, 240, 241),
         title_font="Arial",
         body_font="Arial",
-        title_size=36,
-        body_size=18,
-        code_size=14
+        title_size=32,
+        body_size=14,
+        code_size=12
     ),
     "tech_dark": ThemeConfig(
         name="Tech Dark",
@@ -80,9 +80,9 @@ THEMES: Dict[str, ThemeConfig] = {
         code_bg_color=(45, 45, 45),
         title_font="Consolas",
         body_font="Segoe UI",
-        title_size=36,
-        body_size=18,
-        code_size=14
+        title_size=32,
+        body_size=14,
+        code_size=12
     ),
     "education": ThemeConfig(
         name="Education",
@@ -93,9 +93,9 @@ THEMES: Dict[str, ThemeConfig] = {
         code_bg_color=(245, 245, 245),
         title_font="Georgia",
         body_font="Verdana",
-        title_size=36,
-        body_size=18,
-        code_size=14
+        title_size=32,
+        body_size=14,
+        code_size=12
     ),
     "neumorphism": ThemeConfig(
         name="Neumorphism",
@@ -106,9 +106,9 @@ THEMES: Dict[str, ThemeConfig] = {
         code_bg_color=(226, 232, 240),
         title_font="Arial",
         body_font="Arial",
-        title_size=36,
-        body_size=18,
-        code_size=14
+        title_size=32,
+        body_size=14,
+        code_size=12
     )
 }
 
@@ -121,10 +121,10 @@ class PPTXGenerator:
     SLIDE_HEIGHT = Inches(7.5)
 
     # Content margins
-    MARGIN_LEFT = Inches(0.5)
-    MARGIN_RIGHT = Inches(0.5)
-    MARGIN_TOP = Inches(1.2)
-    MARGIN_BOTTOM = Inches(0.5)
+    MARGIN_LEFT = Inches(0.6)
+    MARGIN_RIGHT = Inches(0.6)
+    MARGIN_TOP = Inches(1.1)
+    MARGIN_BOTTOM = Inches(0.4)
 
     def __init__(self, theme: str = "business", template_path: Optional[str] = None):
         """
@@ -166,6 +166,11 @@ class PPTXGenerator:
         # Create presentation
         if self.template_path and os.path.exists(self.template_path):
             self.prs = Presentation(self.template_path)
+            # Remove all existing template slides to start clean
+            while len(self.prs.slides) > 0:
+                rId = self.prs.slides._sldIdLst[0].get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id')
+                self.prs.part.drop_rel(rId)
+                self.prs.slides._sldIdLst.remove(self.prs.slides._sldIdLst[0])
         else:
             self.prs = Presentation()
             self.prs.slide_width = self.SLIDE_WIDTH
@@ -234,10 +239,16 @@ class PPTXGenerator:
             # Some templates may not support background modification
             pass
 
-    def _add_title_shape(self, slide, title: str, top: float = 0.3, height: float = 0.8) -> Any:
-        """Add title text box to slide."""
+    def _add_title_shape(self, slide, title: str, top: float = 0.3) -> Any:
+        """Add title text box to slide with dynamic height."""
         left = self.MARGIN_LEFT
-        width = self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT
+        slide_w, _ = self._get_slide_dimensions()
+        width = int(slide_w - self.MARGIN_LEFT - self.MARGIN_RIGHT)
+
+        # Calculate height based on title length
+        chars_per_line = max(30, int(width / Inches(1) * 4))
+        est_lines = max(1, len(title) // chars_per_line + (1 if len(title) % chars_per_line else 0))
+        height = max(0.6, est_lines * 0.45)
 
         shape = slide.shapes.add_textbox(left, Inches(top), width, Inches(height))
         tf = shape.text_frame
@@ -258,101 +269,196 @@ class PPTXGenerator:
         slide = self._add_blank_slide()
         self._set_background(slide)
 
-        # Center title
-        title_top = 2.5
+        # Calculate title height based on text length
+        title_text = slide_data.title
+        title_font_size = 36  # Slightly smaller to fit better
+        # Estimate lines: ~30 chars per line for centered title at 36pt
+        chars_per_line = 35
+        est_lines = max(1, len(title_text) // chars_per_line + (1 if len(title_text) % chars_per_line else 0))
+        title_height = max(1.0, est_lines * 0.55)
+
+        # Center title vertically - position it in upper third
+        title_top = 2.0
         title_shape = slide.shapes.add_textbox(
-            self.MARGIN_LEFT,
+            Inches(0.8),
             Inches(title_top),
-            self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT,
-            Inches(1.5)
+            self.SLIDE_WIDTH - Inches(1.6),
+            Inches(title_height)
         )
         tf = title_shape.text_frame
         tf.word_wrap = True
 
         p = tf.paragraphs[0]
-        p.text = slide_data.title
-        p.font.size = Pt(44)
+        p.text = title_text
+        p.font.size = Pt(title_font_size)
         p.font.bold = True
         p.font.color.rgb = RGBColor(*self.theme.title_color)
         p.font.name = self.theme.title_font
         p.alignment = PP_ALIGN.CENTER
 
-        # Subtitle
+        # Subtitle - positioned below title with clear gap
         if slide_data.subtitle:
+            subtitle_top = title_top + title_height + 0.5
             subtitle_shape = slide.shapes.add_textbox(
-                self.MARGIN_LEFT,
-                Inches(title_top + 1.5),
-                self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT,
-                Inches(1)
+                Inches(1.0),
+                Inches(subtitle_top),
+                self.SLIDE_WIDTH - Inches(2.0),
+                Inches(1.0)
             )
             tf = subtitle_shape.text_frame
+            tf.word_wrap = True
             p = tf.paragraphs[0]
             p.text = slide_data.subtitle
-            p.font.size = Pt(24)
+            p.font.size = Pt(20)
             p.font.color.rgb = RGBColor(*self.theme.text_color)
             p.font.name = self.theme.body_font
             p.alignment = PP_ALIGN.CENTER
 
+        # Add speaker notes
+        if slide_data.notes:
+            notes_slide = slide.notes_slide
+            notes_tf = notes_slide.notes_text_frame
+            notes_tf.text = slide_data.notes
+
     def _create_content_slide(self, slide_data: SlideData):
-        """Create a standard content slide."""
-        slide = self._add_blank_slide()
-        self._set_background(slide)
+        """Create a standard content slide with image-aware layout."""
+        self._create_unified_slide(slide_data, use_two_column=False)
 
-        # Add title
-        self._add_title_shape(slide, slide_data.title)
+    def _get_slide_dimensions(self):
+        """Get actual slide dimensions (accounts for template sizes)."""
+        if self.prs:
+            return self.prs.slide_width, self.prs.slide_height
+        return self.SLIDE_WIDTH, self.SLIDE_HEIGHT
 
-        # Content area
-        content_top = self.MARGIN_TOP
-        content_left = self.MARGIN_LEFT
-        content_width = self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT
-        available_height = self.SLIDE_HEIGHT - self.MARGIN_TOP - self.MARGIN_BOTTOM
+    def _get_image_bounds(self, element: ContentElement):
+        """Get the absolute bounds (left, top, right, bottom) of a positioned image."""
+        slide_w, slide_h = self._get_slide_dimensions()
+        meta = element.metadata or {}
+        position = meta.get("position", "")
+        custom_width = self._parse_dimension(meta.get("width", ""), slide_w)
+        custom_height = self._parse_dimension(meta.get("height", ""), slide_h)
 
-        current_top = content_top
+        # Estimate image dimensions
+        img_path = element.content
+        target_width = custom_width if custom_width else Inches(5)
+        target_height = custom_height if custom_height else Inches(4)
 
-        for element in slide_data.elements:
-            if current_top > self.SLIDE_HEIGHT - self.MARGIN_BOTTOM:
-                self.warnings.append(f"Content overflow on slide: {slide_data.title}")
-                break
+        if HAS_PIL and os.path.exists(img_path):
+            try:
+                with Image.open(img_path) as img:
+                    img_w, img_h = img.size
+                    aspect = img_w / img_h
+                    if target_width / aspect > target_height:
+                        final_h = target_height
+                        final_w = target_height * aspect
+                    else:
+                        final_w = target_width
+                        final_h = target_width / aspect
+            except Exception:
+                final_w, final_h = target_width, target_height
+        else:
+            final_w, final_h = target_width, target_height
 
-            element_height = self._add_element(
-                slide, element, content_left, current_top, content_width
-            )
-            current_top += element_height + Inches(0.2)
+        # Ensure integer EMU values
+        final_w = int(round(final_w))
+        final_h = int(round(final_h))
+
+        left, top = self._resolve_image_position(position, final_w, final_h, meta)
+        left = int(round(left))
+        top = int(round(top))
+        return left, top, left + final_w, top + final_h
+
+    def _get_image_h_bounds(self, images: list):
+        """Get the combined horizontal bounds of all positioned images."""
+        if not images:
+            return self.MARGIN_LEFT, self.SLIDE_WIDTH - self.MARGIN_RIGHT
+        min_left = self.SLIDE_WIDTH
+        max_right = 0
+        for img_elem in images:
+            left, _, right, _ = self._get_image_bounds(img_elem)
+            min_left = min(min_left, left)
+            max_right = max(max_right, right)
+        return min_left, max_right
+
+    def _calc_content_area(self, positioned_images, content_top, default_left, default_width, slide_bottom, img_gap):
+        """
+        Calculate available content area that avoids positioned images (using metadata estimates).
+
+        Returns (content_left, content_width, adjusted_content_top).
+        """
+        if not positioned_images:
+            return default_left, default_width, content_top
+
+        default_right = default_left + default_width
+
+        for img_elem in positioned_images:
+            img_left, img_top, img_right, img_bottom = self._get_image_bounds(img_elem)
+
+            # Check if image overlaps vertically with content area
+            if img_bottom <= content_top or img_top >= slide_bottom:
+                continue
+
+            position = img_elem.metadata.get("position", "")
+            if position in ("top-center", "center", "bottom-center"):
+                new_top = img_bottom + img_gap
+                if new_top > content_top:
+                    content_top = new_top
+            elif position in ("center-right", "top-right", "bottom-right"):
+                new_right = img_left - img_gap
+                if new_right > default_left + default_width * 0.3:
+                    default_width = new_right - default_left
+            elif position in ("center-left", "top-left", "bottom-left"):
+                new_left = img_right + img_gap
+                if new_left < default_right - default_width * 0.3:
+                    default_width = default_right - new_left
+                    default_left = new_left
+
+        return default_left, default_width, content_top
+
+    def _calc_content_area_from_bounds(self, img_bounds_list, content_top, default_left, default_width, slide_bottom, img_gap):
+        """
+        Calculate available content area using actual placed image bounds.
+
+        Args:
+            img_bounds_list: List of dicts with 'left', 'top', 'right', 'bottom', 'position' keys
+
+        Returns (content_left, content_width, adjusted_content_top).
+        """
+        if not img_bounds_list:
+            return default_left, default_width, content_top
+
+        default_right = default_left + default_width
+
+        for bounds in img_bounds_list:
+            il = bounds['left']
+            it = bounds['top']
+            ir = bounds['right']
+            ib = bounds['bottom']
+            position = bounds['position']
+
+            # Check if image overlaps vertically with content area
+            if ib <= content_top or it >= slide_bottom:
+                continue
+
+            if position in ("top-center", "center", "bottom-center"):
+                new_top = ib + img_gap
+                if new_top > content_top:
+                    content_top = new_top
+            elif position in ("center-right", "top-right", "bottom-right"):
+                new_right = il - img_gap
+                if new_right > default_left + default_width * 0.3:
+                    default_width = int(new_right - default_left)
+            elif position in ("center-left", "top-left", "bottom-left"):
+                new_left = ir + img_gap
+                if new_left < default_right - default_width * 0.3:
+                    default_width = int(default_right - new_left)
+                    default_left = int(new_left)
+
+        return int(default_left), int(default_width), int(content_top)
 
     def _create_image_slide(self, slide_data: SlideData):
         """Create a slide with image focus."""
-        slide = self._add_blank_slide()
-        self._set_background(slide)
-
-        # Add title
-        self._add_title_shape(slide, slide_data.title)
-
-        # Find image element
-        image_elem = None
-        other_elements = []
-        for elem in slide_data.elements:
-            if elem.type == ContentType.IMAGE and image_elem is None:
-                image_elem = elem
-            else:
-                other_elements.append(elem)
-
-        if image_elem:
-            # Add image centered
-            self._add_image_element(
-                slide, image_elem,
-                Inches(2), Inches(1.5),
-                self.SLIDE_WIDTH - Inches(4)
-            )
-
-        # Add other elements below
-        current_top = Inches(5.5)
-        for elem in other_elements[:2]:  # Limit to 2 extra elements
-            height = self._add_element(
-                slide, elem,
-                self.MARGIN_LEFT, current_top,
-                self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT
-            )
-            current_top += height + Inches(0.1)
+        self._create_unified_slide(slide_data, use_two_column=False)
 
     def _create_chart_slide(self, slide_data: SlideData):
         """Create a slide with chart focus."""
@@ -386,35 +492,310 @@ class PPTXGenerator:
                     Inches(5)
                 )
 
+        # Add speaker notes
+        if slide_data.notes:
+            notes_slide = slide.notes_slide
+            notes_tf = notes_slide.notes_text_frame
+            notes_tf.text = slide_data.notes
+
     def _create_two_column_slide(self, slide_data: SlideData):
         """Create a two-column layout slide."""
+        self._create_unified_slide(slide_data, use_two_column=True)
+
+    def _create_unified_slide(self, slide_data: SlideData, use_two_column: bool = False):
+        """Unified slide layout engine.
+
+        Handles all content layouts with proper image-text integration:
+        - Center/top-center images: placed at top, text flows below at full width
+        - Top-right images: text on left, expands to full width after image bottom
+        - Two-column: logical element grouping with balanced height split
+        - Per-element overflow detection
+        """
         slide = self._add_blank_slide()
         self._set_background(slide)
 
-        # Add title
-        self._add_title_shape(slide, slide_data.title)
+        slide_w, slide_h = self._get_slide_dimensions()
 
-        # Split elements into two columns
-        elements = slide_data.elements
-        mid = len(elements) // 2
+        # Title
+        title_shape = self._add_title_shape(slide, slide_data.title)
+        title_bottom = int(Inches(0.3) + title_shape.height + Inches(0.2))
 
-        left_elements = elements[:mid]
-        right_elements = elements[mid:]
+        content_top = title_bottom
+        img_gap = int(Inches(0.2))
 
-        col_width = (self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT - Inches(0.5)) / 2
+        # Separate positioned images from flow elements
+        pos_images = []  # (element, index)
+        flow_elements = []
+        for idx, elem in enumerate(slide_data.elements):
+            if elem.type == ContentType.IMAGE and elem.metadata.get("position"):
+                pos_images.append((elem, idx))
+            else:
+                flow_elements.append(elem)
 
-        # Left column
-        current_top = self.MARGIN_TOP
-        for elem in left_elements:
-            height = self._add_element(slide, elem, self.MARGIN_LEFT, current_top, col_width)
-            current_top += height + Inches(0.15)
+        # Place positioned images and collect actual bounds
+        placed_img_bounds = []
+        for elem, _ in pos_images:
+            meta = elem.metadata or {}
+            img_path = elem.content
+            if not os.path.exists(img_path):
+                self.warnings.append(f"Image not found: {img_path}")
+                continue
 
-        # Right column
-        current_top = self.MARGIN_TOP
-        right_left = self.MARGIN_LEFT + col_width + Inches(0.5)
-        for elem in right_elements:
-            height = self._add_element(slide, elem, right_left, current_top, col_width)
-            current_top += height + Inches(0.15)
+            position = meta.get("position", "")
+            custom_w = self._parse_dimension(meta.get("width", ""), slide_w)
+            custom_h = self._parse_dimension(meta.get("height", ""), slide_h)
+            target_w = custom_w if custom_w else int(Inches(5))
+            max_h = custom_h if custom_h else int(Inches(4))
+
+            # Compute image size preserving aspect ratio
+            if HAS_PIL:
+                try:
+                    with Image.open(img_path) as pil_img:
+                        iw, ih = pil_img.size
+                        aspect = iw / ih
+                        if target_w / aspect > max_h:
+                            final_h = int(round(max_h))
+                            final_w = int(round(max_h * aspect))
+                        else:
+                            final_w = int(round(target_w))
+                            final_h = int(round(target_w / aspect))
+                except Exception:
+                    final_w, final_h = int(round(target_w)), int(round(max_h))
+            else:
+                final_w, final_h = int(round(target_w)), int(round(max_h))
+
+            # Position with title-aware offset
+            img_left, img_top = self._resolve_image_position(
+                position, final_w, final_h, meta, title_top_offset=title_bottom
+            )
+            img_left = int(round(img_left))
+            img_top = int(round(img_top))
+
+            slide.shapes.add_picture(img_path, img_left, img_top, final_w, final_h)
+            placed_img_bounds.append({
+                'left': img_left, 'top': img_top,
+                'right': img_left + final_w, 'bottom': img_top + final_h,
+                'position': position,
+            })
+
+        # Build content zones from image bounds
+        default_left = int(self.MARGIN_LEFT)
+        default_width = int(slide_w - self.MARGIN_LEFT - self.MARGIN_RIGHT)
+        slide_bottom = int(slide_h - self.MARGIN_BOTTOM)
+
+        # Sort by top for consistent zone processing
+        placed_img_bounds.sort(key=lambda b: b['top'])
+
+        zones = []
+        cur_top = content_top
+        cur_left = default_left
+        cur_width = default_width
+
+        for bounds in placed_img_bounds:
+            il, it, ir, ib = bounds['left'], bounds['top'], bounds['right'], bounds['bottom']
+            pos = bounds['position']
+
+            if pos in ("center", "top-center"):
+                # Image blocks full width → ALL content goes below
+                zone_bottom = ib + img_gap
+                if zone_bottom > cur_top:
+                    cur_top = zone_bottom
+                    cur_left = default_left
+                    cur_width = default_width
+            elif pos in ("top-right", "center-right"):
+                # Left zone: content beside image
+                if it > cur_top + int(Inches(0.3)):
+                    zones.append({'top': cur_top, 'left': cur_left,
+                                  'width': cur_width, 'bottom': it})
+                # Narrow zone while image is present
+                avail_w = il - img_gap - cur_left
+                if avail_w > default_width * 0.25:
+                    zones.append({'top': max(cur_top, it), 'left': cur_left,
+                                  'width': int(avail_w), 'bottom': ib + img_gap})
+                cur_top = ib + img_gap
+                cur_left = default_left
+                cur_width = default_width
+            elif pos in ("top-left", "center-left"):
+                if it > cur_top + int(Inches(0.3)):
+                    zones.append({'top': cur_top, 'left': cur_left,
+                                  'width': cur_width, 'bottom': it})
+                avail_l = ir + img_gap
+                avail_w = default_left + default_width - avail_l
+                if avail_w > default_width * 0.25:
+                    zones.append({'top': max(cur_top, it), 'left': int(avail_l),
+                                  'width': int(avail_w), 'bottom': ib + img_gap})
+                cur_top = ib + img_gap
+                cur_left = default_left
+                cur_width = default_width
+
+        # Final zone (remaining space)
+        if cur_top < slide_bottom:
+            zones.append({'top': cur_top, 'left': cur_left,
+                          'width': cur_width, 'bottom': slide_bottom})
+
+        if not zones:
+            zones.append({'top': content_top, 'left': default_left,
+                          'width': default_width, 'bottom': slide_bottom})
+
+        # --- Place flow elements into zones ---
+        if use_two_column and len(flow_elements) >= 3:
+            self._place_two_column(slide, flow_elements, zones, slide_bottom)
+        else:
+            self._place_sequential(slide, flow_elements, zones, slide_bottom)
+
+        # Speaker notes
+        if slide_data.notes:
+            notes_slide = slide.notes_slide
+            notes_tf = notes_slide.notes_text_frame
+            notes_tf.text = slide_data.notes
+
+    def _estimate_element_height(self, element: ContentElement, width: int) -> int:
+        """Estimate the height an element will consume when placed."""
+        if element.type == ContentType.HEADING:
+            return int(Inches(0.45))
+        elif element.type == ContentType.PARAGRAPH:
+            text = element.content
+            chars_per_line = max(40, int(width / Inches(1) * 5))
+            est_lines = max(1, len(text) // chars_per_line + (1 if len(text) % chars_per_line else 0))
+            return int(Inches(max(0.3, est_lines * 0.28)))
+        elif element.type in (ContentType.BULLET_LIST, ContentType.NUMBERED_LIST):
+            items = element.content
+            chars_per_line = max(40, int(width / Inches(1) * 5))
+            total_lines = 0
+            for item in items:
+                text_len = len(item['text']) + item.get("indent", 0) * 4 + 3
+                total_lines += max(1, text_len // chars_per_line + (1 if text_len % chars_per_line else 0))
+            return int(Inches(0.3) * total_lines)
+        elif element.type == ContentType.TABLE:
+            data = element.content
+            rows = data.get("rows", [])
+            headers = data.get("headers", [])
+            row_count = len(rows) + (1 if headers else 0)
+            return int(Inches(0.33) * row_count)
+        elif element.type == ContentType.CODE_BLOCK:
+            lines = element.content.split('\n')
+            line_count = min(len(lines), 15)
+            return int(Inches(0.25) * line_count + Inches(0.3))
+        elif element.type == ContentType.IMAGE:
+            return int(Inches(3))
+        return int(Inches(0.3))
+
+    def _find_zone_for_y(self, cur_y: int, zones: list) -> dict:
+        """Find the zone that contains cur_y, or the next available zone."""
+        gap = int(Inches(0.15))
+        # First: find zone that contains cur_y (top <= cur_y < bottom)
+        for z in zones:
+            if z['top'] <= cur_y < z['bottom']:
+                return z
+        # Second: find the next zone whose top is near or after cur_y
+        for z in zones:
+            if z['top'] >= cur_y - gap:
+                return z
+        # Fallback: last zone
+        return zones[-1] if zones else None
+
+    def _place_sequential(self, slide, elements: list, zones: list, slide_bottom: int):
+        """Place elements sequentially through content zones."""
+        if not zones:
+            return
+        cur_y = zones[0]['top']
+
+        for elem in elements:
+            zone = self._find_zone_for_y(cur_y, zones)
+            if zone is None:
+                break
+
+            # If we jumped to a new zone, reset cur_y to zone top
+            if cur_y < zone['top']:
+                cur_y = zone['top']
+
+            # Check overflow
+            avail_h = zone['bottom'] - cur_y
+            est_h = self._estimate_element_height(elem, zone['width'])
+            if avail_h < int(Inches(0.3)) or (est_h > avail_h and avail_h < int(Inches(0.8))):
+                # Try next zone
+                try:
+                    zone_idx = zones.index(zone)
+                except ValueError:
+                    zone_idx = -1
+                if zone_idx + 1 < len(zones):
+                    zone = zones[zone_idx + 1]
+                    cur_y = zone['top']
+                    avail_h = zone['bottom'] - cur_y
+                    if avail_h < int(Inches(0.3)):
+                        break
+                else:
+                    break
+
+            max_h = int(max(Inches(0.3), avail_h - Inches(0.1)))
+            h = self._add_element(slide, elem, zone['left'], cur_y, zone['width'], max_h)
+
+            if h > 0:
+                cur_y += int(h) + int(Inches(0.08))
+
+    def _place_two_column(self, slide, elements: list, zones: list, slide_bottom: int):
+        """Place elements in two-column layout with logical grouping."""
+        zone = zones[0]
+        col_top = zone['top']
+        col_width = int((zone['width'] - Inches(0.4)) / 2)
+        col_left_1 = zone['left']
+        col_left_2 = zone['left'] + col_width + int(Inches(0.4))
+
+        # Group elements: heading + following non-heading = one unit
+        groups = []  # List of (elements_list, weight)
+        cur_group = []
+        cur_weight = 0
+
+        for elem in elements:
+            if elem.type == ContentType.HEADING and cur_group:
+                groups.append((cur_group, cur_weight))
+                cur_group = [elem]
+                cur_weight = self._estimate_element_height(elem, col_width)
+            else:
+                cur_group.append(elem)
+                cur_weight += self._estimate_element_height(elem, col_width)
+        if cur_group:
+            groups.append((cur_group, cur_weight))
+
+        # Split groups into two balanced columns
+        total_w = sum(w for _, w in groups)
+        target_w = total_w / 2
+
+        col1_groups = []
+        col2_groups = []
+        cum_w = 0
+        split_done = False
+
+        for i, (grp, w) in enumerate(groups):
+            if not split_done:
+                col1_groups.append(grp)
+                cum_w += w
+                if cum_w >= target_w and i < len(groups) - 1:
+                    split_done = True
+            else:
+                col2_groups.append(grp)
+
+        # If only one column has content, fall back to sequential
+        if not col2_groups:
+            self._place_sequential(slide, elements, zones, slide_bottom)
+            return
+
+        def _place_column(groups_list, left, width, top, bottom):
+            cur_y = top
+            for grp in groups_list:
+                for elem in grp:
+                    avail_h = bottom - cur_y
+                    est_h = self._estimate_element_height(elem, width)
+                    if avail_h < int(Inches(0.3)) or (est_h > avail_h and avail_h < int(Inches(0.8))):
+                        return cur_y
+                    max_h = int(max(Inches(0.3), avail_h - Inches(0.1)))
+                    h = self._add_element(slide, elem, left, cur_y, width, max_h)
+                    if h > 0:
+                        cur_y += int(h) + int(Inches(0.08))
+            return cur_y
+
+        _place_column(col1_groups, col_left_1, col_width, col_top, slide_bottom)
+        _place_column(col2_groups, col_left_2, col_width, col_top, slide_bottom)
 
     def _create_fallback_slide(self, slide_data: SlideData, error: str):
         """Create a simple fallback slide when normal creation fails."""
@@ -428,7 +809,7 @@ class PPTXGenerator:
         shape = slide.shapes.add_textbox(
             self.MARGIN_LEFT,
             self.MARGIN_TOP,
-            self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT,
+            int(self.SLIDE_WIDTH - self.MARGIN_LEFT - self.MARGIN_RIGHT),
             Inches(1)
         )
         tf = shape.text_frame
@@ -437,40 +818,52 @@ class PPTXGenerator:
         p.font.size = Pt(12)
         p.font.color.rgb = RGBColor(200, 100, 100)
 
-    def _add_element(self, slide, element: ContentElement, left, top, width) -> float:
+    def _add_element(self, slide, element: ContentElement, left, top, width, max_height=None) -> float:
         """
         Add a content element to the slide.
 
         Returns:
             Height of the added element in EMUs
         """
+        if max_height is None:
+            max_height = self.SLIDE_HEIGHT - self.MARGIN_TOP - self.MARGIN_BOTTOM
+
         if element.type == ContentType.PARAGRAPH:
-            return self._add_paragraph_element(slide, element, left, top, width)
+            return self._add_paragraph_element(slide, element, left, top, width, max_height)
         elif element.type == ContentType.HEADING:
             return self._add_heading_element(slide, element, left, top, width)
         elif element.type in (ContentType.BULLET_LIST, ContentType.NUMBERED_LIST):
-            return self._add_list_element(slide, element, left, top, width)
+            return self._add_list_element(slide, element, left, top, width, max_height)
         elif element.type == ContentType.CODE_BLOCK:
-            return self._add_code_element(slide, element, left, top, width)
+            return self._add_code_element(slide, element, left, top, width, max_height)
         elif element.type == ContentType.TABLE:
-            return self._add_table_element(slide, element, left, top, width)
+            return self._add_table_element(slide, element, left, top, width, max_height)
         elif element.type == ContentType.IMAGE:
-            return self._add_image_element(slide, element, left, top, width)
+            return self._add_image_element(slide, element, left, top, width, max_height)
         else:
             return Inches(0)
 
-    def _add_paragraph_element(self, slide, element: ContentElement, left, top, width) -> float:
-        """Add paragraph text."""
-        height = Inches(0.5)
+    def _add_paragraph_element(self, slide, element: ContentElement, left, top, width, max_height=None) -> float:
+        """Add paragraph text with dynamic height."""
+        text = element.content
+        font_size = self.theme.body_size
+        # Estimate lines: ~70 chars per line at body_size for standard width
+        chars_per_line = max(40, int(width / Inches(1) * 5))
+        est_lines = max(1, len(text) // chars_per_line + (1 if len(text) % chars_per_line else 0))
+        height = Inches(max(0.35, est_lines * 0.3))
+        if max_height:
+            height = min(height, max_height)
+
         shape = slide.shapes.add_textbox(left, top, width, height)
         tf = shape.text_frame
         tf.word_wrap = True
 
         p = tf.paragraphs[0]
-        p.text = element.content
-        p.font.size = Pt(self.theme.body_size)
+        p.text = text
+        p.font.size = Pt(font_size)
         p.font.color.rgb = RGBColor(*self.theme.text_color)
         p.font.name = self.theme.body_font
+        p.space_after = Pt(2)
 
         return height
 
@@ -492,13 +885,22 @@ class PPTXGenerator:
 
         return height
 
-    def _add_list_element(self, slide, element: ContentElement, left, top, width) -> float:
-        """Add bullet or numbered list."""
+    def _add_list_element(self, slide, element: ContentElement, left, top, width, max_height=None) -> float:
+        """Add bullet or numbered list with dynamic height."""
         items = element.content
         is_numbered = element.type == ContentType.NUMBERED_LIST
 
-        line_height = Inches(0.35)
-        height = line_height * len(items)
+        line_height = Inches(0.32)
+        # Account for long items that wrap
+        total_lines = 0
+        chars_per_line = max(40, int(width / Inches(1) * 5))
+        for item in items:
+            text_len = len(item['text']) + item.get("indent", 0) * 4 + 3  # prefix + indent
+            total_lines += max(1, text_len // chars_per_line + (1 if text_len % chars_per_line else 0))
+
+        height = line_height * total_lines
+        if max_height:
+            height = min(height, max_height - Inches(0.1))
 
         shape = slide.shapes.add_textbox(left, top, width, height)
         tf = shape.text_frame
@@ -518,11 +920,11 @@ class PPTXGenerator:
             p.font.size = Pt(self.theme.body_size)
             p.font.color.rgb = RGBColor(*self.theme.text_color)
             p.font.name = self.theme.body_font
-            p.space_after = Pt(6)
+            p.space_after = Pt(4)
 
         return height
 
-    def _add_code_element(self, slide, element: ContentElement, left, top, width) -> float:
+    def _add_code_element(self, slide, element: ContentElement, left, top, width, max_height=None) -> float:
         """Add code block with simple styling."""
         code = element.content
         lines = code.split('\n')
@@ -530,6 +932,8 @@ class PPTXGenerator:
 
         line_height = Inches(0.25)
         height = line_height * line_count + Inches(0.3)
+        if max_height:
+            height = min(height, max_height)
 
         # Background shape
         bg_shape = slide.shapes.add_shape(
@@ -562,7 +966,7 @@ class PPTXGenerator:
 
         return height
 
-    def _add_table_element(self, slide, element: ContentElement, left, top, width) -> float:
+    def _add_table_element(self, slide, element: ContentElement, left, top, width, max_height=None) -> float:
         """Add table."""
         data = element.content
         headers = data.get("headers", [])
@@ -577,8 +981,11 @@ class PPTXGenerator:
         if col_count == 0 or row_count == 0:
             return Inches(0)
 
-        row_height = Inches(0.4)
+        row_height = Inches(0.35)
         height = row_height * row_count
+        if max_height:
+            height = min(height, max_height)
+            row_count_fit = max(1, int(height / row_height))
 
         table = slide.shapes.add_table(
             row_count, col_count,
@@ -607,43 +1014,131 @@ class PPTXGenerator:
 
         return height
 
-    def _add_image_element(self, slide, element: ContentElement, left, top, width) -> float:
-        """Add image from local file."""
+    def _add_image_element(self, slide, element: ContentElement, left, top, width, max_height=None) -> float:
+        """Add image from local file with optional position control."""
         img_path = element.content
+        meta = element.metadata or {}
 
         if not os.path.exists(img_path):
             self.warnings.append(f"Image not found: {img_path}")
             return Inches(0)
 
         try:
-            # Get image dimensions
-            max_height = Inches(4)
+            # Check for position preset
+            position = meta.get("position", "")
+
+            # Parse custom width/height from metadata using actual slide dimensions
+            slide_w, slide_h = self._get_slide_dimensions()
+            custom_width = self._parse_dimension(meta.get("width", ""), slide_w)
+            custom_height = self._parse_dimension(meta.get("height", ""), slide_h)
+
+            # Determine target width for aspect ratio calculation
+            target_width = custom_width if custom_width else width
+            img_max_height = custom_height if custom_height else (max_height if max_height else Inches(4))
 
             if HAS_PIL:
                 with Image.open(img_path) as img:
                     img_width, img_height = img.size
                     aspect = img_width / img_height
 
-                    # Calculate dimensions to fit
-                    if width / aspect > max_height:
-                        height = max_height
-                        actual_width = height * aspect
+                    if target_width / aspect > img_max_height:
+                        final_height = img_max_height
+                        final_width = img_max_height * aspect
                     else:
-                        actual_width = width
-                        height = width / aspect
+                        final_width = target_width
+                        final_height = target_width / aspect
             else:
-                actual_width = width
-                height = max_height
+                final_width = target_width
+                final_height = img_max_height
 
-            # Center image
-            center_left = left + (width - actual_width) / 2
+            # Round to integer EMU values (python-pptx requires int)
+            final_width = int(round(final_width))
+            final_height = int(round(final_height))
 
-            slide.shapes.add_picture(img_path, center_left, top, actual_width, height)
-            return height
+            # Calculate position based on preset or flow position
+            if position:
+                img_left, img_top = self._resolve_image_position(
+                    position, final_width, final_height, meta
+                )
+            else:
+                # Default: center horizontally in the flow
+                img_left = left + (width - final_width) / 2
+                img_top = top
+
+            img_left = int(round(img_left))
+            img_top = int(round(img_top))
+
+            slide.shapes.add_picture(img_path, img_left, img_top, final_width, final_height)
+
+            # Positioned images don't consume flow space (layout handled by _calc_content_area)
+            if position:
+                return Inches(0)
+            return final_height
 
         except Exception as e:
             self.warnings.append(f"Failed to add image {img_path}: {str(e)}")
             return Inches(0)
+
+    def _parse_dimension(self, val_str: str, total_size) -> float:
+        """Parse dimension string like '50%', '3in', '200px' to EMU."""
+        if not val_str:
+            return 0
+        val_str = val_str.strip()
+        if val_str.endswith('%'):
+            try:
+                pct = float(val_str[:-1]) / 100
+                return total_size * pct
+            except ValueError:
+                return 0
+        elif val_str.endswith('in'):
+            try:
+                return Inches(float(val_str[:-2]))
+            except ValueError:
+                return 0
+        elif val_str.endswith('px'):
+            try:
+                return Inches(float(val_str[:-2]) / 96)
+            except ValueError:
+                return 0
+        else:
+            try:
+                return Inches(float(val_str))
+            except ValueError:
+                return 0
+
+    def _resolve_image_position(self, position: str, img_width, img_height, meta: dict, title_top_offset: float = None):
+        """Resolve image position preset to (left, top) coordinates.
+
+        Args:
+            title_top_offset: Bottom of title area in EMU. Top-positioned images
+                are placed below this to avoid overlap.
+        """
+        margin = Inches(0.3)
+        slide_w, slide_h = self._get_slide_dimensions()
+
+        # Default top for top-positioned images: below title or 1.2in
+        top_y = title_top_offset if title_top_offset is not None else Inches(1.2)
+
+        # Parse custom x/y if provided
+        custom_x = self._parse_dimension(meta.get("x", ""), slide_w)
+        custom_y = self._parse_dimension(meta.get("y", ""), slide_h)
+
+        positions = {
+            "top-left": (margin, top_y),
+            "top-center": ((slide_w - img_width) / 2, top_y),
+            "top-right": (slide_w - img_width - margin, top_y),
+            "center-left": (margin, (slide_h - img_height) / 2),
+            "center": ((slide_w - img_width) / 2, max(top_y, (slide_h - img_height) / 2)),
+            "center-right": (slide_w - img_width - margin, (slide_h - img_height) / 2),
+            "bottom-left": (margin, slide_h - img_height - margin),
+            "bottom-center": ((slide_w - img_width) / 2, slide_h - img_height - margin),
+            "bottom-right": (slide_w - img_width - margin, slide_h - img_height - margin),
+        }
+
+        if custom_x or custom_y:
+            return (custom_x if custom_x else margin, custom_y if custom_y else top_y)
+
+        return positions.get(position, positions["center"])
 
     def _add_chart_from_table(self, slide, element: ContentElement, left, top, width, height):
         """Create a chart from table data."""

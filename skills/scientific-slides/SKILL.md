@@ -1,12 +1,13 @@
 ---
+source_url: https://github.com/K-Dense-AI/scientific-agent-skills
+source_hash: 9260bb2380b43200e7ee7de3fdf4076bf4aec233
 name: scientific-slides
 description: Build slide decks and presentations for research talks. Use this for making PowerPoint slides, conference presentations, seminar talks, research presentations, thesis defense slides, or any scientific talk. Provides slide structure, design templates, timing guidance, and visual validation. Works with PowerPoint and LaTeX Beamer.
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
-    skill-author: K-Dense Inc.
-    source_url: "https://github.com/K-Dense-AI/scientific-agent-skills"
-    source_hash: "5bd00bf61d81afee8c3e835f51d7c05bff4e3e7a"
+  version: "1.0"
+  skill-author: K-Dense Inc.
 ---
 
 # Scientific Slides
@@ -195,7 +196,7 @@ Use the PPTX skill's html2pptx workflow to create slides that include:
 - Title and body text added separately
 - Professional layout and formatting
 
-See `scientific-skills/pptx/SKILL.md` for complete PPTX creation documentation.
+See `skills/pptx/SKILL.md` for complete PPTX creation documentation.
 
 ---
 
@@ -505,7 +506,7 @@ python scripts/slides_to_pdf.py slides/*.png -o presentation.pdf
 
 **Best for**: Editable slides, custom designs, template-based workflows
 
-**Reference**: See `scientific-skills/pptx/SKILL.md` for complete documentation
+**Reference**: See `skills/pptx/SKILL.md` for complete documentation
 
 Use Nano Banana Pro with `--visual-only` to generate images, then build PPTX with text.
 
@@ -569,7 +570,7 @@ Implement iterative improvement through visual inspection. For complete workflow
 python scripts/pdf_to_images.py presentation.pdf review/slide --dpi 150
 
 # Or use pptx skill's thumbnail tool
-python scientific-skills/pptx/scripts/thumbnail.py presentation.pptx review/thumb
+python skills/pptx/scripts/thumbnail.py presentation.pptx review/thumb
 ```
 
 **Step 3: Systematic Inspection**
@@ -724,7 +725,7 @@ and discussion (slides 13-14) BEFORE creating slides.
 
 **Option A: PowerPoint (via PPTX skill)**
 1. Read `assets/powerpoint_design_guide.md`
-2. Read `scientific-skills/pptx/SKILL.md`
+2. Read `skills/pptx/SKILL.md`
 3. Choose approach (programmatic or template-based)
 4. Create master slides with consistent design
 5. Build presentation following outline
@@ -797,7 +798,7 @@ and discussion (slides 13-14) BEFORE creating slides.
 python scripts/pdf_to_images.py presentation.pdf review/slides
 
 # Or create thumbnail grid
-python scientific-skills/pptx/scripts/thumbnail.py presentation.pptx review/grid
+python skills/pptx/scripts/thumbnail.py presentation.pptx review/grid
 ```
 
 **Systematic Review**:
@@ -1036,7 +1037,7 @@ python scripts/pdf_to_images.py presentation.pdf output/slide --dpi 150
 
 ### PPTX Skill Scripts
 
-From `scientific-skills/pptx/scripts/`:
+From `skills/pptx/scripts/`:
 - `thumbnail.py`: Create thumbnail grids
 - `rearrange.py`: Duplicate and reorder slides
 - `inventory.py`: Extract text content
@@ -1134,7 +1135,7 @@ If you need editable slides (e.g., for company templates):
 3. **Build PPTX** using the PPTX skill with generated images
 4. **Add text** separately using PPTX workflow
 
-See `scientific-skills/pptx/SKILL.md` for complete PowerPoint workflow.
+See `skills/pptx/SKILL.md` for complete PowerPoint workflow.
 
 ## Summary: Key Principles
 

@@ -1,10 +1,11 @@
 ---
+source_url: https://github.com/K-Dense-AI/scientific-agent-skills
+source_hash: 2ca344c3d042cce5a176b9cd1e508caff5997f77
 name: infographics
 description: "Create professional infographics using Nano Banana Pro AI with smart iterative refinement. Uses Gemini 3 Pro for quality review. Integrates research-lookup and web search for accurate data. Supports 10 infographic types, 8 industry styles, and colorblind-safe palettes."
 allowed-tools: Read Write Edit Bash
 metadata:
-  source_url: "https://github.com/K-Dense-AI/scientific-agent-skills"
-  source_hash: "5bd00bf61d81afee8c3e835f51d7c05bff4e3e7a"
+  version: "1.0"
 ---
 
 # Infographics

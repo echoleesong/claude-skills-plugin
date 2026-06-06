@@ -1,12 +1,13 @@
 ---
+source_url: https://github.com/K-Dense-AI/scientific-agent-skills
+source_hash: 668f2f3f37cabe4dbe5a18d69a1b4021ca52cf79
 name: generate-image
 description: Generate or edit images using AI models (FLUX, Nano Banana 2). Use for general-purpose image generation including photos, illustrations, artwork, visual assets, concept art, and any image that is not a technical diagram or schematic. For flowcharts, circuits, pathways, and technical diagrams, use the scientific-schematics skill instead.
 license: MIT license
 compatibility: Requires an OpenRouter API key
 metadata:
-    skill-author: K-Dense Inc.
-    source_url: "https://github.com/K-Dense-AI/scientific-agent-skills"
-    source_hash: "5bd00bf61d81afee8c3e835f51d7c05bff4e3e7a"
+  version: "1.0"
+  skill-author: K-Dense Inc.
 ---
 
 # Generate Image

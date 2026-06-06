@@ -95,6 +95,11 @@ def convert_md_to_pptx(
     if verbose:
         print(f"📄 Reading: {input_path}")
 
+    # Change to markdown file's directory so relative image paths resolve correctly
+    md_dir = os.path.dirname(os.path.abspath(input_path))
+    original_dir = os.getcwd()
+    os.chdir(md_dir)
+
     # Parse Markdown
     slides, parse_warnings = parse_markdown(md_content)
     warnings.extend(parse_warnings)
@@ -126,6 +131,9 @@ def convert_md_to_pptx(
         progress_callback=progress_cb
     )
     warnings.extend(gen_warnings)
+
+    # Restore original directory
+    os.chdir(original_dir)
 
     if success and verbose:
         print(f"✅ Created: {os.path.abspath(output_path)}")

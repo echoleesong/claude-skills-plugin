@@ -2,13 +2,13 @@
 name: academic-paper
 description: "12-agent academic paper writing pipeline. 10 modes (full/plan/outline/revision/revision-coach/abstract/lit-review/format-convert/citation-check/disclosure). 6 paper types, 5 citation formats, bilingual abstracts, LaTeX/DOCX-via-Pandoc/PDF output. Style Calibration + Writing Quality Check + Anti-Patterns with IRON RULE markers. Triggers: write paper, academic paper, guide my paper, parse reviews, AI disclosure, 寫論文, 學術論文, 引導我寫論文, 審查意見."
 metadata:
-  version: "3.1.2"
-  last_updated: "2026-05-18"
+  version: "3.2.0"
+  last_updated: "2026-06-01"
   status: active
   data_access_level: redacted
   task_type: open-ended
   source_url: "https://github.com/Imbad0202/academic-research-skills"
-  source_hash: "cb2f4e07019e1cd72881547e91d880ec7cc0d7fc"
+  source_hash: "418b269511eef3bd939e4ac51e4566af32c21d14"
   related_skills:
     - deep-research
     - academic-paper-reviewer
@@ -362,7 +362,7 @@ See `agents/intake_agent.md` for the complete field definitions of the Phase 0 c
 
 **Templates** (11 files in `templates/`): `imrad`, `literature_review`, `case_study`, `theoretical_paper`, `policy_brief`, `conference_paper`, `latex_article_template.tex`, `bilingual_abstract`, `credit_statement`, `funding_statement`, `revision_tracking` (4 status types).
 
-**Examples** (8 files in `examples/`): `imrad_hei_example`, `literature_review_example`, `plan_mode_guided_writing`, `chinese_paper_example`, `revision_mode_example`, `revision_recovery_example`, `clinical_citation_verification_checklist`, `clinical_epistemic_status_example`.
+**Examples** (9 files in `examples/`): `imrad_hei_example`, `literature_review_example`, `plan_mode_guided_writing`, `chinese_paper_example`, `revision_mode_example`, `revision_recovery_example`, `clinical_citation_verification_checklist`, `clinical_epistemic_status_example`, `version_family_reconciliation_example`.
 
 ---
 
@@ -439,8 +439,8 @@ academic-paper + academic-paper-reviewer -> Peer review -> revision loop
 
 | Item | Content |
 |------|---------|
-| Skill Version | 3.1.1 |
-| Last Updated | 2026-04-27 |
+| Skill Version | 3.2.0 |
+| Last Updated | 2026-06-01 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | deep-research v1.0+ (upstream), academic-paper-reviewer v1.0+ (downstream) |
 

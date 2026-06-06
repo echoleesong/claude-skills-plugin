@@ -12,6 +12,22 @@ from typing import List, Optional, Dict, Any
 from enum import Enum
 
 
+def strip_markdown_formatting(text: str) -> str:
+    """Strip markdown formatting symbols from text, keeping the content."""
+    # Strip bold/italic markers: **text**, *text*, __text__, _text_
+    text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
+    text = re.sub(r'__(.+?)__', r'\1', text)
+    text = re.sub(r'\*(.+?)\*', r'\1', text)
+    text = re.sub(r'(?<!\w)_(.+?)_(?!\w)', r'\1', text)
+    # Strip inline code: `text`
+    text = re.sub(r'`(.+?)`', r'\1', text)
+    # Strip links: [text](url) -> text
+    text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+    # Strip strikethrough: ~~text~~
+    text = re.sub(r'~~(.+?)~~', r'\1', text)
+    return text.strip()
+
+
 class ContentType(Enum):
     """Types of content elements."""
     HEADING = "heading"
@@ -70,6 +86,11 @@ class MarkdownParser:
         while i < len(lines):
             line = lines[i]
 
+            # Skip horizontal rules (---, ***, ___) - used as slide separators
+            if re.match(r'^\s*([-*_])\s*\1\s*\1[\s\-*_]*$', line.strip()):
+                i += 1
+                continue
+
             # Check for code block
             if line.strip().startswith('```'):
                 i = self._parse_code_block(lines, i)
@@ -90,12 +111,13 @@ class MarkdownParser:
                 i += 1
                 continue
 
-            # Check for image
-            img_match = re.match(r'!\[([^\]]*)\]\(([^)]+)\)', line.strip())
+            # Check for image with optional metadata: ![alt](path){position=center, width=50%}
+            img_match = re.match(r'!\[([^\]]*)\]\(([^)]+)\)(\{[^}]*\})?', line.strip())
             if img_match:
                 alt_text = img_match.group(1)
                 img_path = img_match.group(2)
-                self._add_image(img_path, alt_text)
+                meta_str = img_match.group(3) or ""
+                self._add_image(img_path, alt_text, meta_str)
                 i += 1
                 continue
 
@@ -131,6 +153,7 @@ class MarkdownParser:
 
     def _handle_heading(self, level: int, text: str):
         """Handle heading elements - create new slides for H1/H2."""
+        text = strip_markdown_formatting(text)
         if level <= 2:
             # Start new slide
             if self.current_slide:
@@ -153,6 +176,17 @@ class MarkdownParser:
         """Add paragraph content."""
         self._ensure_slide()
 
+        # Check for speaker notes: lines starting with "> "
+        if text.startswith('> '):
+            note_text = strip_markdown_formatting(text[2:])
+            if self.current_slide.notes:
+                self.current_slide.notes += '\n' + note_text
+            else:
+                self.current_slide.notes = note_text
+            return
+
+        text = strip_markdown_formatting(text)
+
         # Check if this looks like a subtitle (first content after title slide)
         if (self.current_slide.layout_hint == "title" and
             not self.current_slide.subtitle and
@@ -164,8 +198,8 @@ class MarkdownParser:
                 content=text
             ))
 
-    def _add_image(self, path: str, alt_text: str = ""):
-        """Add image content."""
+    def _add_image(self, path: str, alt_text: str = "", meta_str: str = ""):
+        """Add image content with optional positioning metadata."""
         self._ensure_slide()
 
         # Only support local images
@@ -173,10 +207,21 @@ class MarkdownParser:
             self.warnings.append(f"Skipped non-local image: {path}")
             return
 
+        # Parse metadata: {position=center, width=50%, height=3in}
+        meta = {"alt_text": alt_text}
+        if meta_str:
+            # Remove surrounding braces
+            inner = meta_str.strip('{}')
+            for pair in inner.split(','):
+                pair = pair.strip()
+                if '=' in pair:
+                    key, val = pair.split('=', 1)
+                    meta[key.strip()] = val.strip()
+
         self.current_slide.elements.append(ContentElement(
             type=ContentType.IMAGE,
             content=path,
-            metadata={"alt_text": alt_text}
+            metadata=meta
         ))
 
     def _parse_bullet_list(self, lines: List[str], start: int) -> int:
@@ -189,7 +234,7 @@ class MarkdownParser:
             match = re.match(r'^(\s*)[-*+]\s+(.+)$', lines[i])
             if match:
                 indent = len(match.group(1))
-                text = match.group(2).strip()
+                text = strip_markdown_formatting(match.group(2).strip())
                 items.append({"text": text, "indent": indent // 2})
                 i += 1
             elif lines[i].strip() == "":
@@ -219,7 +264,7 @@ class MarkdownParser:
             match = re.match(r'^(\s*)\d+\.\s+(.+)$', lines[i])
             if match:
                 indent = len(match.group(1))
-                text = match.group(2).strip()
+                text = strip_markdown_formatting(match.group(2).strip())
                 items.append({"text": text, "indent": indent // 2})
                 i += 1
             elif lines[i].strip() == "":
@@ -278,7 +323,7 @@ class MarkdownParser:
             header_line = header_line[1:]
         if header_line.endswith('|'):
             header_line = header_line[:-1]
-        headers = [cell.strip() for cell in header_line.split('|')]
+        headers = [strip_markdown_formatting(cell.strip()) for cell in header_line.split('|')]
         i += 1
 
         # Skip separator row
@@ -296,7 +341,7 @@ class MarkdownParser:
             if line.endswith('|'):
                 line = line[:-1]
 
-            cells = [cell.strip() for cell in line.split('|')]
+            cells = [strip_markdown_formatting(cell.strip()) for cell in line.split('|')]
             rows.append(cells)
             i += 1
 

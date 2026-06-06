@@ -1,12 +1,13 @@
 ---
+source_url: https://github.com/K-Dense-AI/scientific-agent-skills
+source_hash: 180161d00055488c4e1eee22845c526822d06a85
 name: pptx-posters
 description: Create research posters using HTML/CSS that can be exported to PDF or PPTX. Use this skill ONLY when the user explicitly requests PowerPoint/PPTX poster format. For standard research posters, use latex-posters instead. This skill provides modern web-based poster design with responsive layouts and easy visual integration.
 allowed-tools: Read Write Edit Bash
 license: MIT license
 metadata:
-    skill-author: K-Dense Inc.
-    source_url: "https://github.com/K-Dense-AI/scientific-agent-skills"
-    source_hash: "5bd00bf61d81afee8c3e835f51d7c05bff4e3e7a"
+  version: "1.0"
+  skill-author: K-Dense Inc.
 ---
 
 # PPTX Research Posters (HTML-Based)

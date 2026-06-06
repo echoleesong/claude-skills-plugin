@@ -8,7 +8,7 @@ metadata:
   data_access_level: raw
   task_type: open-ended
   source_url: "https://github.com/Imbad0202/academic-research-skills"
-  source_hash: "cb2f4e07019e1cd72881547e91d880ec7cc0d7fc"
+  source_hash: "6f9c178922093286b38fd7715d9ac99d96d27a7d"
   related_skills:
     - academic-paper
     - academic-pipeline
@@ -253,7 +253,7 @@ User: "Research [topic]"
 
 1. ⚠️ **IRON RULE**: **Devil's Advocate** has 3 mandatory checkpoints; **Critical-severity** issues block progression
 2. Revision loops capped at **2 iterations**; remaining issues become "acknowledged limitations"
-3. ⚠️ **IRON RULE**: **Ethics Review** can halt delivery for Critical ethics concerns
+3. ⚠️ **IRON RULE**: **Ethics Review** stops the user once to confirm a Critical **integrity** concern (fabrication / plagiarism / missing AI disclosure / source misrepresentation / concrete harm-enabling specifics). Overridable with recorded reasoning — it confirms, it does not veto. Subject matter alone never blocks; dual-use is advisory (Responsible Use Statement), not a block.
 4. User confirmation required after Phase 1 before proceeding
 
 ---
@@ -324,7 +324,7 @@ Key failure path summary:
 | Insufficient literature | bibliography_agent finds < 5 sources | Expand search strategy, alternative keywords |
 | Methodology mismatch | RQ type misaligned with method capability | Return to Phase 1, suggest 3 alternative methods |
 | Devil's Advocate CRITICAL | Fatal logical flaw discovered | STOP, explain the issue, require correction |
-| Ethics BLOCKED | Serious ethical issue | STOP, list issues and remediation path |
+| Ethics BLOCKED | Critical integrity issue (not subject matter) | Stop the user once to confirm; list issues + remediation path; overridable with recorded reasoning |
 | Socratic non-convergence | > 10 rounds without convergence | Suggest switching to full mode |
 | User abandons mid-process | Explicitly states they don't want to continue | Save progress, provide re-entry path |
 | Only Chinese-language literature | English search returns empty | Switch to Chinese academic databases |
@@ -436,6 +436,7 @@ See `academic-pipeline/SKILL.md` for the complete workflow.
 | `examples/handoff_to_paper.md` | deep-research full mode handoff to academic-paper |
 | `examples/review_mode.md` | Review mode: 3-agent review pipeline for policy recommendation text |
 | `examples/fact_check_mode.md` | Fact-check mode: source verification of HEI claims with per-claim verdicts |
+| `examples/idea_diversity_coverage_gap_advisory.md` | #257 Socratic wording-pattern + lit-review distributional-skew advisories |
 
 ---
 
@@ -462,7 +463,7 @@ Explicit prohibitions to prevent common failure modes:
 ## Quality Standards
 
 1. ⚠️ **IRON RULE**: **Every claim must have a citation** — no unsupported assertions
-2. **Evidence hierarchy** — meta-analyses > RCTs > cohort studies > case reports > expert opinion
+2. **Evidence hierarchy** — meta-analyses > RCTs > cohort studies > case reports > expert opinion (field-neutral baseline; grading is **discipline-relative** — a source meeting its own field's gold standard can reach Grade A even at a low design level. See `references/source_quality_hierarchy.md` §Grading Rubric + §Field-Specific Adjustments)
 3. **Contradiction disclosure** — if sources disagree, report both sides with evidence quality comparison
 4. **Limitation transparency** — every report must have an explicit limitations section
 5. **AI disclosure** — all reports include a statement that AI-assisted research tools were used
@@ -496,8 +497,8 @@ deep-research (systematic-review) + academic-paper -> PRISMA systematic review p
 
 | Item | Content |
 |------|---------|
-| Skill Version | 2.9.3 |
-| Last Updated | 2026-04-30 |
+| Skill Version | 2.9.4 |
+| Last Updated | 2026-05-18 |
 | Maintainer | Cheng-I Wu |
 | Dependent Skills | academic-paper v1.0+ (downstream) |
 
